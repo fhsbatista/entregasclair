@@ -1,6 +1,6 @@
-package com.devandroid.fbatista.uberclone.model;
+package com.app.mobile.fast.model;
 
-import com.devandroid.fbatista.uberclone.config.ConfigFirebase;
+import com.app.mobile.fast.config.ConfigFirebase;
 import com.google.firebase.database.DatabaseReference;
 
 public class Requisicao {

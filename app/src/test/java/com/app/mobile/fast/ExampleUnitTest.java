@@ -1,4 +1,4 @@
-package com.devandroid.fbatista.uberclone;
+package com.app.mobile.fast;
 
 import org.junit.Test;
 

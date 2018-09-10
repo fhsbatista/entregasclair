@@ -1,4 +1,4 @@
-package com.devandroid.fbatista.uberclone.activity;
+package com.app.mobile.fast.activity;
 
 import android.Manifest;
 import android.content.DialogInterface;
@@ -10,10 +10,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 
-import com.devandroid.fbatista.uberclone.R;
-import com.devandroid.fbatista.uberclone.config.ConfigFirebase;
-import com.devandroid.fbatista.uberclone.helper.Permissoes;
-import com.devandroid.fbatista.uberclone.helper.UserProfile;
+import com.app.mobile.fast.R;
+import com.app.mobile.fast.config.ConfigFirebase;
+import com.app.mobile.fast.helper.Permissoes;
+import com.app.mobile.fast.helper.UserProfile;
 
 public class MainActivity extends AppCompatActivity {
 

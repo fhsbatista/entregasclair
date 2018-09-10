@@ -1,4 +1,4 @@
-package com.devandroid.fbatista.uberclone.model;
+package com.app.mobile.fast.model;
 
 public class Destino {
 

@@ -1,9 +1,9 @@
-package com.devandroid.fbatista.uberclone.activity;
+package com.app.mobile.fast.activity;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.devandroid.fbatista.uberclone.R;
+import com.app.mobile.fast.R;
 
 public class HomeMotoristaActivity extends AppCompatActivity {
 

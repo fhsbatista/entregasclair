@@ -1,14 +1,14 @@
-package com.devandroid.fbatista.uberclone.helper;
+package com.app.mobile.fast.helper;
 
 import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.devandroid.fbatista.uberclone.activity.HomeMotoristaActivity;
-import com.devandroid.fbatista.uberclone.activity.HomePassageiroActivity;
-import com.devandroid.fbatista.uberclone.config.ConfigFirebase;
-import com.devandroid.fbatista.uberclone.model.Usuario;
+import com.app.mobile.fast.activity.HomeMotoristaActivity;
+import com.app.mobile.fast.activity.HomePassageiroActivity;
+import com.app.mobile.fast.config.ConfigFirebase;
+import com.app.mobile.fast.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;

@@ -1,8 +1,8 @@
-package com.devandroid.fbatista.uberclone.model;
+package com.app.mobile.fast.model;
 
 import android.graphics.Bitmap;
 
-import com.devandroid.fbatista.uberclone.config.ConfigFirebase;
+import com.app.mobile.fast.config.ConfigFirebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.Exclude;

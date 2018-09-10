@@ -1,4 +1,4 @@
-package com.devandroid.fbatista.uberclone;
+package com.app.mobile.fast;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

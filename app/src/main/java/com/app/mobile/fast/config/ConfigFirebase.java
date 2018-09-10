@@ -1,4 +1,4 @@
-package com.devandroid.fbatista.uberclone.config;
+package com.app.mobile.fast.config;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;

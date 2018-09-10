@@ -1,4 +1,4 @@
-package com.devandroid.fbatista.uberclone.activity;
+package com.app.mobile.fast.activity;
 
 import android.Manifest;
 import android.content.Context;
@@ -24,12 +24,12 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
-import com.devandroid.fbatista.uberclone.R;
-import com.devandroid.fbatista.uberclone.config.ConfigFirebase;
-import com.devandroid.fbatista.uberclone.helper.UserProfile;
-import com.devandroid.fbatista.uberclone.model.Destino;
-import com.devandroid.fbatista.uberclone.model.Requisicao;
-import com.devandroid.fbatista.uberclone.model.Usuario;
+import com.app.mobile.fast.R;
+import com.app.mobile.fast.config.ConfigFirebase;
+import com.app.mobile.fast.helper.UserProfile;
+import com.app.mobile.fast.model.Destino;
+import com.app.mobile.fast.model.Requisicao;
+import com.app.mobile.fast.model.Usuario;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;

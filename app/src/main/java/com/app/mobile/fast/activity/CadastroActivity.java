@@ -1,4 +1,4 @@
-package com.devandroid.fbatista.uberclone.activity;
+package com.app.mobile.fast.activity;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -9,10 +9,10 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.Toast;
 
-import com.devandroid.fbatista.uberclone.R;
-import com.devandroid.fbatista.uberclone.config.ConfigFirebase;
-import com.devandroid.fbatista.uberclone.helper.UserProfile;
-import com.devandroid.fbatista.uberclone.model.Usuario;
+import com.app.mobile.fast.R;
+import com.app.mobile.fast.config.ConfigFirebase;
+import com.app.mobile.fast.helper.UserProfile;
+import com.app.mobile.fast.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;

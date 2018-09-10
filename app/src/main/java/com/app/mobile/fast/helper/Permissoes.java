@@ -1,4 +1,4 @@
-package com.devandroid.fbatista.uberclone.helper;
+package com.app.mobile.fast.helper;
 
 import android.app.Activity;
 import android.content.pm.PackageManager;
