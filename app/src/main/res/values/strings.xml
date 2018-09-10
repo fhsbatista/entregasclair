@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">UberClone</string>
+    <string name="title_activity_maps">Map</string>
+    <string name="titulo_cadastro">Novo Cadastro</string>
+    <string name="titulo_login">Login</string>
+    <string name="title_activity_home_passageiro">Iniciar uma viagem</string>
+</resources>
