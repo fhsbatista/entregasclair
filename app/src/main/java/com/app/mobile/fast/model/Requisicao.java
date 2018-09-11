@@ -3,10 +3,11 @@ package com.app.mobile.fast.model;
 import com.app.mobile.fast.config.ConfigFirebase;
 import com.google.firebase.database.DatabaseReference;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 
-public class Requisicao {
+public class Requisicao implements Serializable {
 
     public static final String STATUS_WAITING = "Aguardando";
     public static final String STATUS_ON_THE_WAY = "A Caminho";
