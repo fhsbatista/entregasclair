@@ -3,6 +3,9 @@ package com.app.mobile.fast.model;
 import com.app.mobile.fast.config.ConfigFirebase;
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Requisicao {
 
     public static final String STATUS_WAITING = "Aguardando";
@@ -13,14 +16,33 @@ public class Requisicao {
 
     private String id;
     private String status;
-    private Usuario passenger;
-    private Usuario driver;
+    private Passageiro passenger;
+    private Motorista driver;
     private Destino destination;
     private Double latitude;
     private Double longitude;
 
     public Requisicao(){
 
+    }
+
+    public void atualizar(){
+        DatabaseReference refRequisicao = ConfigFirebase.getDatabaseReference()
+                .child("requisicoes").child(this.getId());
+
+        Map requisicao = new HashMap();
+        requisicao.put("driver", this.getDriver());
+        requisicao.put("status", this.getStatus());
+
+        refRequisicao.updateChildren(requisicao);
+    }
+
+    public void setPassenger(Passageiro passenger) {
+        this.passenger = passenger;
+    }
+
+    public void setDriver(Motorista driver) {
+        this.driver = driver;
     }
 
     public Double getLatitude() {
@@ -55,20 +77,12 @@ public class Requisicao {
         this.status = status;
     }
 
-    public Usuario getPassenger() {
+    public Passageiro getPassenger() {
         return passenger;
     }
 
-    public void setPassenger(Usuario passenger) {
-        this.passenger = passenger;
-    }
-
-    public Usuario getDriver() {
+    public Motorista getDriver() {
         return driver;
-    }
-
-    public void setDriver(Usuario driver) {
-        this.driver = driver;
     }
 
     public Destino getDestination() {

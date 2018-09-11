@@ -4,4 +4,11 @@
     <string name="titulo_cadastro">Novo Cadastro</string>
     <string name="titulo_login">Login</string>
     <string name="title_activity_home_passageiro">Iniciar uma viagem</string>
+    <string name="title_activity_home_motorista">Requisiçoes</string>
+    <string name="activity_home_motorista_there_is_no_requests">Nao existem passageiros aguardando</string>
+    <string name="activity_home_passageiro_cancel_ride">Cancelar Carro</string>
+    <string name="activity_home_passageiro_request_car">Chamar Carro</string>
+    <string name="title_activity_corrida">Visualizar corrida</string>
+    <string name="activity_corrida_accept_ride">Aceitar Corrida</string>
+    <string name="map_marker_where_the_user_is">Voce esta aqui</string>
 </resources>

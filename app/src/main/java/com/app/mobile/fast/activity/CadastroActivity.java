@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.app.mobile.fast.R;
 import com.app.mobile.fast.config.ConfigFirebase;
 import com.app.mobile.fast.helper.UserProfile;
+import com.app.mobile.fast.model.Passageiro;
 import com.app.mobile.fast.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -42,21 +43,21 @@ public class CadastroActivity extends AppCompatActivity {
 
         //Primeiro serao validados os campos digitados, caso eles tenham sido digitados corretamente, o cadastro sera iniciado
         if(validarCamposDigitados()){
-            final Usuario usuario = new Usuario();
-            usuario.setNome(mNome.getText().toString());
-            usuario.setEmail(mEmail.getText().toString());
-            usuario.setSenha(mSenha.getText().toString());
-            usuario.setTipo(verificarTipoUsuario());
+            final Passageiro passageiro = new Passageiro();
+            passageiro.setNome(mNome.getText().toString());
+            passageiro.setEmail(mEmail.getText().toString());
+            passageiro.setSenha(mSenha.getText().toString());
+            passageiro.setTipo(verificarTipoUsuario());
 
             mAuth = ConfigFirebase.getFirebaseAuth();
-            mAuth.createUserWithEmailAndPassword(usuario.getEmail(), usuario.getSenha())
+            mAuth.createUserWithEmailAndPassword(passageiro.getEmail(), passageiro.getSenha())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        usuario.salvarNoFirebase();
-                        UserProfile.atualizarNomeUsuario(usuario.getNome());
-                        if(usuario.getTipo().equals("Driver"))
+                        passageiro.salvarNoFirebase();
+                        UserProfile.atualizarNomeUsuario(passageiro.getNome());
+                        if(passageiro.getTipo().equals("Driver"))
                             startActivity(new Intent(CadastroActivity.this, HomeMotoristaActivity.class));
                         else
                             startActivity(new Intent(CadastroActivity.this, HomePassageiroActivity.class));

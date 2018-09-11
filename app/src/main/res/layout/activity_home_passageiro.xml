@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.design.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -69,11 +70,11 @@
         android:id="@+id/bt_chamar_uber"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="Chamar Uber"
+        android:text="@string/activity_home_passageiro_request_car"
         android:layout_margin="16dp"
         android:layout_gravity="bottom"
         android:theme="@style/TemaBotaoPadrao"
-        android:onClick="chamarUber"
+        android:onClick="chamarCarro"
         />
 
 

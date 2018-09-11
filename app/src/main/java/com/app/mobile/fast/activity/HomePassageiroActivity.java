@@ -10,7 +10,6 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
@@ -28,6 +27,7 @@ import com.app.mobile.fast.R;
 import com.app.mobile.fast.config.ConfigFirebase;
 import com.app.mobile.fast.helper.UserProfile;
 import com.app.mobile.fast.model.Destino;
+import com.app.mobile.fast.model.Passageiro;
 import com.app.mobile.fast.model.Requisicao;
 import com.app.mobile.fast.model.Usuario;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -50,14 +50,14 @@ public class HomePassageiroActivity extends AppCompatActivity
         implements OnMapReadyCallback {
 
     private EditText mLocalDestino;
-    private Button mChamarUber;
+    private Button mChamarCarro;
     private LinearLayout mLayoutEnderecos;
 
     private GoogleMap mMap;
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
     private LatLng mLatLng;
-    private boolean isUberRequested = false;
+    private boolean isRideRequested = false;
     private Requisicao mRequisicao;
 
 
@@ -70,7 +70,7 @@ public class HomePassageiroActivity extends AppCompatActivity
 
         mLayoutEnderecos = findViewById(R.id.layout_enderecos);
         mLocalDestino = findViewById(R.id.et_local_destino);
-        mChamarUber = findViewById(R.id.bt_chamar_uber);
+        mChamarCarro = findViewById(R.id.bt_chamar_uber);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -81,6 +81,8 @@ public class HomePassageiroActivity extends AppCompatActivity
 
 
     }
+
+
 
     private void verificaRequisicaoPendente() {
 
@@ -102,9 +104,9 @@ public class HomePassageiroActivity extends AppCompatActivity
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                             mRequisicao = dataSnapshot.getValue(Requisicao.class);
-                            mChamarUber.setText("Cancelar Uber");
+                            mChamarCarro.setText(R.string.activity_home_passageiro_cancel_ride);
                             mLayoutEnderecos.setVisibility(View.GONE);
-                            isUberRequested = true;
+                            isRideRequested = true;
                         }
 
                         @Override
@@ -139,10 +141,10 @@ public class HomePassageiroActivity extends AppCompatActivity
 
     }
 
-    public void chamarUber(View view) {
+    public void chamarCarro(View view) {
 
 
-        if (isUberRequested == false) {
+        if (isRideRequested == false) {
 
 
             //Get the address which was typed by the user
@@ -176,8 +178,8 @@ public class HomePassageiroActivity extends AppCompatActivity
                     builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            isUberRequested = true;
-                            mChamarUber.setText("Cancelar Uber");
+                            isRideRequested = true;
+                            mChamarCarro.setText(R.string.activity_home_passageiro_cancel_ride);
                             mLayoutEnderecos.setVisibility(View.GONE);
                             mRequisicao = criaRequisicao(destino);
                             mRequisicao.salvarRequisicao();
@@ -202,8 +204,8 @@ public class HomePassageiroActivity extends AppCompatActivity
 
         } else {
             mLayoutEnderecos.setVisibility(View.VISIBLE);
-            isUberRequested = false;
-            mChamarUber.setText("Chamar Uber");
+            isRideRequested = false;
+            mChamarCarro.setText(R.string.activity_home_passageiro_request_car);
             mRequisicao.cancelarRequisicao();
 
             //The request is setted as null because a new request has to be create when the user click at the button again
@@ -225,8 +227,8 @@ public class HomePassageiroActivity extends AppCompatActivity
         requisicao.setStatus(Requisicao.STATUS_WAITING);
 
         //Get and set the current user data
-        Usuario usuario = UserProfile.getUsuarioLogado();
-        requisicao.setPassenger(usuario);
+        Passageiro passageiro = UserProfile.getPassageiroLogado();
+        requisicao.setPassenger(passageiro);
 
         //Set the coordinates
         requisicao.setLatitude(mLatLng.latitude);

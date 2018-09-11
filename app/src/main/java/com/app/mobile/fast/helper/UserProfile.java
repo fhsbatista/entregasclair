@@ -8,6 +8,8 @@ import android.util.Log;
 import com.app.mobile.fast.activity.HomeMotoristaActivity;
 import com.app.mobile.fast.activity.HomePassageiroActivity;
 import com.app.mobile.fast.config.ConfigFirebase;
+import com.app.mobile.fast.model.Motorista;
+import com.app.mobile.fast.model.Passageiro;
 import com.app.mobile.fast.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -30,7 +32,7 @@ public class UserProfile {
         return user;
     }
 
-    public static Usuario getUsuarioLogado(){
+    private static Usuario getUsuarioLogado(){
         FirebaseUser firebaseUser = getFirebaseUserLogado();
         Usuario usuario = new Usuario();
         usuario.setId(firebaseUser.getUid());
@@ -38,6 +40,18 @@ public class UserProfile {
         usuario.setNome(firebaseUser.getDisplayName());
 
         return usuario;
+    }
+
+    public static Motorista getMotoristaLogado(){
+        Usuario usuario = getUsuarioLogado();
+
+        return new Motorista(usuario);
+    }
+
+    public static Passageiro getPassageiroLogado(){
+        Usuario usuario = getUsuarioLogado();
+
+        return new Passageiro(usuario);
     }
 
     public static boolean atualizarNomeUsuario(String nome){
@@ -77,9 +91,9 @@ public class UserProfile {
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            Usuario usuario = dataSnapshot.getValue(Usuario.class);
+                            Passageiro passageiro = dataSnapshot.getValue(Passageiro.class);
 
-                            if (usuario.getTipo().equals("Driver"))
+                            if (passageiro.getTipo().equals("Driver"))
                                 activity.startActivity(new Intent(activity, HomeMotoristaActivity.class));
                             else
                                 activity.startActivity(new Intent(activity, HomePassageiroActivity.class));
