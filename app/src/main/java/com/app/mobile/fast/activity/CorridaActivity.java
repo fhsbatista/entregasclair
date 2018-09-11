@@ -49,7 +49,7 @@ public class CorridaActivity extends AppCompatActivity
 
         Requisicao requisicao = new Requisicao();
         requisicao.setId(recuperarBundleIdRequisicao());
-        requisicao.setDriver(mMotorista);
+        requisicao.setDriver(recuperarBundleMotorista());
         requisicao.setStatus(Requisicao.STATUS_ON_THE_WAY);
         requisicao.atualizar();
     }
@@ -150,15 +150,18 @@ public class CorridaActivity extends AppCompatActivity
         return null;
     }
 
-    private void recuperarBundleMotorista(){
+    private Motorista recuperarBundleMotorista(){
 
         if (getIntent().getExtras().containsKey("motorista")) {
             Bundle extras = getIntent().getExtras();
-            mMotorista= (Motorista) getIntent().getSerializableExtra("motorista");
+            Motorista motorista= (Motorista) getIntent().getSerializableExtra("motorista");
+            return motorista;
         } else {
             Toast.makeText(this, "Houve um erro ao abrir a requisicao", Toast.LENGTH_SHORT).show();
             finish();
         }
+
+        return null;
 
     }
 

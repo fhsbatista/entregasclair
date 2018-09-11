@@ -2,7 +2,7 @@ package com.app.mobile.fast.model;
 
 import java.io.Serializable;
 
-public class Motorista extends Usuario implements Serializable {
+public class Motorista extends Usuario {
 
     private String latitude;
     private String longitude;
