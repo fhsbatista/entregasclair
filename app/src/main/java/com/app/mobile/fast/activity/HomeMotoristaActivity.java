@@ -122,6 +122,7 @@ public class HomeMotoristaActivity extends AppCompatActivity {
                                         Motorista motorista = UserProfile.getMotoristaLogado();
                                         Intent intent = new Intent(HomeMotoristaActivity.this, CorridaActivity.class);
                                         intent.putExtra("idRequisicao", requisicao.getId());
+                                        intent.putExtra("requisicao", requisicao);
                                         intent.putExtra("motorista", motorista);
                                         startActivity(intent);
                                     }
@@ -218,7 +219,7 @@ public class HomeMotoristaActivity extends AppCompatActivity {
                 if(dataSnapshot.getChildrenCount() > 0){
                     mTextViewNoPassagensWarning.setVisibility(View.GONE);
                     mRecyclerView.setVisibility(View.VISIBLE);
-
+                    mListRequests.clear();
                     for (DataSnapshot data : dataSnapshot.getChildren()){
                         Requisicao requisicao = data.getValue(Requisicao.class);
                         mListRequests.add(requisicao);
