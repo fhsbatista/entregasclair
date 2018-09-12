@@ -33,4 +33,5 @@
         android:onClick="aceitarCorrida"
         />
 
+
 </android.support.design.widget.CoordinatorLayout>

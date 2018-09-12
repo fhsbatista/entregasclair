@@ -1,5 +1,7 @@
 package com.app.mobile.fast.model;
 
+import android.provider.ContactsContract;
+
 import com.app.mobile.fast.config.ConfigFirebase;
 import com.google.firebase.database.DatabaseReference;
 
@@ -28,6 +30,8 @@ public class Requisicao implements Serializable {
     }
 
     public void atualizar(){
+
+        //Update the requisicoes node
         DatabaseReference refRequisicao = ConfigFirebase.getDatabaseReference()
                 .child("requisicoes").child(this.getId());
 
@@ -36,6 +40,13 @@ public class Requisicao implements Serializable {
         requisicao.put("status", this.getStatus());
 
         refRequisicao.updateChildren(requisicao);
+
+        //Create a child at the node 'requisicoes_abertas_motoristas'
+        DatabaseReference refRequisicaoMotorista = ConfigFirebase.getDatabaseReference()
+                .child("requisicoes_abertas_motoristas").child(this.getDriver().getId());
+
+        refRequisicaoMotorista.child("requisicao").setValue(this);
+
     }
 
     public void setPassenger(Passageiro passenger) {
