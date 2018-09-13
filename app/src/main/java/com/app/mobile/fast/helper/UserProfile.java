@@ -158,7 +158,7 @@ public class UserProfile {
 
     public static void atualizaGeoFireLocalizacaoUsuario(double latitude, double longitute){
 
-        DatabaseReference refLocalUsuario = ConfigFirebase.getDatabaseReference().child("localizoes_usuarios");
+        DatabaseReference refLocalUsuario = ConfigFirebase.getDatabaseReference().child("localizacoes_usuarios");
         GeoFire geoFire = new GeoFire(refLocalUsuario);
         geoFire.setLocation(
                 getIdUsuario(),

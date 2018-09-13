@@ -25,6 +25,10 @@ import com.app.mobile.fast.config.ConfigFirebase;
 import com.app.mobile.fast.helper.UserProfile;
 import com.app.mobile.fast.model.Motorista;
 import com.app.mobile.fast.model.Requisicao;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -46,6 +50,7 @@ public class CorridaActivity extends AppCompatActivity
         implements OnMapReadyCallback {
 
 
+    private static final String TAG = CorridaActivity.class.getSimpleName();
     private Button mButton;
     private GoogleMap mMap;
     private LocationManager mLocationManager;
@@ -154,7 +159,7 @@ public class CorridaActivity extends AppCompatActivity
                 .title(getString(R.string.map_marker_where_the_user_is))
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.usuario)));
 
-        adicionarCirculoMarcadorPassageiro(location);
+        iniciarMonitoramentoCorrida(location);
 
         centralizarMarcadoresNaCamera();
     }
@@ -166,8 +171,10 @@ public class CorridaActivity extends AppCompatActivity
                 .center(location)
                 .fillColor(Color.argb(90, 255, 153,0))
                 .strokeColor(Color.argb(190, 255, 152,0))
-                .radius(50)
+                .radius(50) //metros
         );
+
+
 
 
 
@@ -189,6 +196,48 @@ public class CorridaActivity extends AppCompatActivity
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.carro)));
 
         centralizarMarcadoresNaCamera();
+
+
+    }
+
+    private void iniciarMonitoramentoCorrida(LatLng location){
+
+        adicionarCirculoMarcadorPassageiro(location);
+
+        DatabaseReference refLocalizacoesUsuarios = ConfigFirebase.getDatabaseReference()
+                .child("localizacoes_usuarios");
+        GeoFire geoFire = new GeoFire(refLocalizacoesUsuarios);
+        GeoLocation geoLocation = new GeoLocation(location.latitude, location.longitude);
+        GeoQuery geoQuery = geoFire.queryAtLocation(geoLocation, 0.05); //Radius em kilometros
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                if(key.equals(UserProfile.getMotoristaLogado().getId())){
+                    Toast.makeText(CorridaActivity.this, "Procure o motorista", Toast.LENGTH_LONG).show();
+                    Log.d(TAG, "O motorista entrou no raio");
+                }
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+
+            }
+        });
 
 
     }
