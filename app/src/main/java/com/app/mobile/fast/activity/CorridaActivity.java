@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -30,6 +31,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -151,7 +154,23 @@ public class CorridaActivity extends AppCompatActivity
                 .title(getString(R.string.map_marker_where_the_user_is))
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.usuario)));
 
+        adicionarCirculoMarcadorPassageiro(location);
+
         centralizarMarcadoresNaCamera();
+    }
+
+    private void adicionarCirculoMarcadorPassageiro(LatLng location) {
+
+        Circle circle = mMap.addCircle(
+                new CircleOptions()
+                .center(location)
+                .fillColor(Color.argb(90, 255, 153,0))
+                .strokeColor(Color.argb(190, 255, 152,0))
+                .radius(50)
+        );
+
+
+
     }
 
     private void adicionarMarcadorMotorista(Location location) {
