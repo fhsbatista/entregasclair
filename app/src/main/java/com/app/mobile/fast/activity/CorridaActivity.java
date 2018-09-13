@@ -2,6 +2,7 @@ package com.app.mobile.fast.activity;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.location.Location;
@@ -59,6 +60,7 @@ public class CorridaActivity extends AppCompatActivity
 
 
     }
+
     private void inicializarComponentes() {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -74,7 +76,7 @@ public class CorridaActivity extends AppCompatActivity
 
     }
 
-    private void configuracoesMapa(){
+    private void configuracoesMapa() {
         configuracaoLocalizacaoPassageiro();
         configuracaoLocalizacaoMotorista();
         centralizarMarcadoresNaCamera();
@@ -172,17 +174,17 @@ public class CorridaActivity extends AppCompatActivity
 
     private void centralizarMarcadoresNaCamera() {
 
-        if(mMarkerDriver == null && mMarkerPassenger == null)
+        if (mMarkerDriver == null && mMarkerPassenger == null)
             return;
-        else if (mMarkerDriver != null && mMarkerPassenger == null){
+        else if (mMarkerDriver != null && mMarkerPassenger == null) {
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMarkerDriver.getPosition(), 15));
             return;
-        } else{
+        } else {
             //Create the object which will show the markers
             LatLngBounds.Builder builder = new LatLngBounds.Builder();
-            if(mMarkerDriver != null)
+            if (mMarkerDriver != null)
                 builder.include(mMarkerDriver.getPosition());
-            if(mMarkerPassenger != null)
+            if (mMarkerPassenger != null)
                 builder.include(mMarkerPassenger.getPosition());
 
             LatLngBounds bounds = builder.build();
@@ -202,9 +204,6 @@ public class CorridaActivity extends AppCompatActivity
         }
 
 
-
-
-
     }
 
     private void listenerRequisicao() {
@@ -218,13 +217,13 @@ public class CorridaActivity extends AppCompatActivity
                 centralizarMarcadoresNaCamera();
                 Requisicao requisicao = dataSnapshot.getValue(Requisicao.class);
 
-                switch (requisicao.getStatus()){
+                switch (requisicao.getStatus()) {
 
-                    case Requisicao.STATUS_ON_THE_WAY :
+                    case Requisicao.STATUS_ON_THE_WAY:
                         mButton.setText(R.string.activity_corrida_on_the_way);
                         break;
 
-                    case Requisicao.STATUS_WAITING :
+                    case Requisicao.STATUS_WAITING:
                         mButton.setText(R.string.activity_corrida_accept_ride);
                         break;
 
@@ -239,17 +238,15 @@ public class CorridaActivity extends AppCompatActivity
         });
 
 
-
-
     }
 
-    public void aceitarCorrida(View view){
+    public void aceitarCorrida(View view) {
         mRequisicao.setStatus(Requisicao.STATUS_ON_THE_WAY);
         mRequisicao.setDriver(recuperarMotorista());
         mRequisicao.atualizar();
     }
 
-    private Motorista recuperarMotorista(){
+    private Motorista recuperarMotorista() {
         if (getIntent().getExtras().containsKey("motorista")) {
             Bundle extras = getIntent().getExtras();
             Motorista motorista = (Motorista) extras.getSerializable("motorista");
@@ -269,6 +266,29 @@ public class CorridaActivity extends AppCompatActivity
         configuracoesMapa();
     }
 
+    @Override
+    public boolean onSupportNavigateUp() {
+
+        if (verificarRedirecionamentoAutomatico()) {
+            Toast.makeText(this, "Voce precisa encerrar esta corrida antes de voltar para a tela anterior", Toast.LENGTH_SHORT).show();
+        } else {
+            startActivity(new Intent(this, HomeMotoristaActivity.class));
+        }
+        return false;
+
+    }
+
+
+    private boolean verificarRedirecionamentoAutomatico() {
+        //Este extra e para que a corrida activity possa saber que ela foi aberta automaticamente, e nao por conta de uma acao do usuario direta. Isto e necessario para que o "up button" da corrida possa funcionar de forma especifica a fim de o usuario nao conseguir utilizar este botao. Pois caso ele use, a corrida que estava ativa nao sera listada, e entao ninguem mais podera abrir esta corrida.
+
+        if (getIntent().getExtras().containsKey("redirecionamento_automatico")) {
+            Bundle extras = getIntent().getExtras();
+            return extras.getBoolean("redirecionamento_automatico");
+        }
+
+        return false;
+    }
 
 }
 

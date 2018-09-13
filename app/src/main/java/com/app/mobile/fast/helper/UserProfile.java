@@ -114,6 +114,8 @@ public class UserProfile {
                                             Intent intent = new Intent(activity, CorridaActivity.class);
                                             intent.putExtra("requisicao", requisicao);
                                             intent.putExtra("motorista", motorista);
+                                            //Este extra e para que a corrida activity possa saber que ela foi aberta automaticamente, e nao por conta de uma acao do usuario direta. Isto e necessario para que o "up button" da corrida possa funcionar de forma especifica a fim de o usuario nao conseguir utilizar este botao. Pois caso ele use, a corrida que estava ativa nao sera listada, e entao ninguem mais podera abrir esta corrida.
+                                            intent.putExtra("redirecionamento_automatico", true);
                                             activity.startActivity(intent);
 
                                         } else{
