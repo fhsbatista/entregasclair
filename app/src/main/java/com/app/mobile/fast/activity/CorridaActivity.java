@@ -21,6 +21,7 @@ import android.widget.Toast;
 
 import com.app.mobile.fast.R;
 import com.app.mobile.fast.config.ConfigFirebase;
+import com.app.mobile.fast.helper.UserProfile;
 import com.app.mobile.fast.model.Motorista;
 import com.app.mobile.fast.model.Requisicao;
 import com.google.android.gms.maps.CameraUpdate;
@@ -106,6 +107,7 @@ public class CorridaActivity extends AppCompatActivity
             public void onLocationChanged(Location location) {
                 //O que sera feito quando a localizacao mudar
                 adicionarMarcadorMotorista(location);
+                UserProfile.atualizaGeoFireLocalizacaoUsuario(location.getLatitude(), location.getLongitude());
             }
 
             @Override

@@ -267,6 +267,8 @@ public class HomePassageiroActivity extends AppCompatActivity
             @Override
             public void onLocationChanged(Location location) {
 
+                UserProfile.atualizaGeoFireLocalizacaoUsuario(location.getLatitude(), location.getLongitude() );
+
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
 

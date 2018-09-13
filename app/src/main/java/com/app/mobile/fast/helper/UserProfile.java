@@ -13,6 +13,8 @@ import com.app.mobile.fast.model.Motorista;
 import com.app.mobile.fast.model.Passageiro;
 import com.app.mobile.fast.model.Requisicao;
 import com.app.mobile.fast.model.Usuario;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -84,8 +86,6 @@ public class UserProfile {
 
     public static void redirecionarUsuario(final Activity activity) {
 
-
-
         if (getFirebaseUserLogado() != null) {
             String idUsuario = getIdUsuario();
 
@@ -152,6 +152,25 @@ public class UserProfile {
 
 
 
+
+
+    }
+
+    public static void atualizaGeoFireLocalizacaoUsuario(double latitude, double longitute){
+
+        DatabaseReference refLocalUsuario = ConfigFirebase.getDatabaseReference().child("localizoes_usuarios");
+        GeoFire geoFire = new GeoFire(refLocalUsuario);
+        geoFire.setLocation(
+                getIdUsuario(),
+                new GeoLocation(latitude, longitute),
+                new GeoFire.CompletionListener() {
+            @Override
+            public void onComplete(String key, DatabaseError error) {
+                if (error != null) {
+                    Log.d(TAG, "Erro ao salvar localizacao do usuario utilizando o GeoFire");
+                }
+            }
+        });
 
 
     }
