@@ -9,6 +9,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
@@ -24,6 +25,7 @@ import android.widget.Toast;
 import com.app.mobile.fast.R;
 import com.app.mobile.fast.config.ConfigFirebase;
 import com.app.mobile.fast.helper.UserProfile;
+import com.app.mobile.fast.model.Destino;
 import com.app.mobile.fast.model.Motorista;
 import com.app.mobile.fast.model.Requisicao;
 import com.firebase.geofire.GeoFire;
@@ -329,6 +331,36 @@ public class CorridaActivity extends AppCompatActivity
         mRequisicao.setStatus(Requisicao.STATUS_ON_THE_WAY);
         mRequisicao.setDriver(recuperarMotorista());
         mRequisicao.atualizar();
+    }
+
+    public void tracarRota(View view){
+        if (mRequisicao != null) {
+            if(!mRequisicao.getStatus().isEmpty()){
+                String latitude = "";
+                String longitute = "";
+
+                switch (mRequisicao.getStatus()){
+
+                    case Requisicao.STATUS_ON_THE_WAY :
+                        latitude = String.valueOf(mRequisicao.getLatitude());
+                        longitute = String.valueOf(mRequisicao.getLongitude());
+                        break;
+                    case Requisicao.STATUS_TRAVELING :
+                        Destino destino = mRequisicao.getDestination();
+                        latitude = destino.getLatitude();
+                        longitute = destino.getLongitute();
+                        break;
+
+                }
+                //String que represenat o destino
+                String latlon = latitude + ", " + longitute;
+                //Abrir rota
+                Uri uri = Uri.parse("google.navigation:q=" + latlon + "&mode=d");
+                Intent mapIntent = new Intent(Intent.ACTION_VIEW, uri);
+                mapIntent.setPackage("com.google.android.apps.maps");
+                startActivity(mapIntent);
+            }
+        }
     }
 
     private Motorista recuperarMotorista() {
