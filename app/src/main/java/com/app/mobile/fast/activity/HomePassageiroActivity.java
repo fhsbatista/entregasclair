@@ -80,9 +80,9 @@ public class HomePassageiroActivity extends AppCompatActivity
         verificaRequisicaoPendente();
 
 
+
+
     }
-
-
 
     private void verificaRequisicaoPendente() {
 

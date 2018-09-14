@@ -208,13 +208,21 @@ public class CorridaActivity extends AppCompatActivity
                 .child("localizacoes_usuarios");
         GeoFire geoFire = new GeoFire(refLocalizacoesUsuarios);
         GeoLocation geoLocation = new GeoLocation(location.latitude, location.longitude);
-        GeoQuery geoQuery = geoFire.queryAtLocation(geoLocation, 0.05); //Radius em kilometros
+        final GeoQuery geoQuery = geoFire.queryAtLocation(geoLocation, 0.05); //Radius em kilometros
         geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 if(key.equals(UserProfile.getMotoristaLogado().getId())){
-                    Toast.makeText(CorridaActivity.this, "Procure o motorista", Toast.LENGTH_LONG).show();
-                    Log.d(TAG, "O motorista entrou no raio");
+                    //Avisa o motorista para que procure o passageiro
+                    Toast.makeText(CorridaActivity.this, "Procure o passageiro", Toast.LENGTH_LONG).show();
+
+                    //Remove o listener do geoquery
+                    geoQuery.removeAllListeners();
+
+                    //Atualiza o status da requisicao
+                    mRequisicao.setStatus(Requisicao.STATUS_TRAVELING);
+                    mRequisicao.atualizarStatus();
+
                 }
             }
 

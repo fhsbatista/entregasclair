@@ -13,7 +13,7 @@ public class Requisicao implements Serializable {
 
     public static final String STATUS_WAITING = "Aguardando";
     public static final String STATUS_ON_THE_WAY = "A Caminho";
-    public static final String STATUS_TRAVELING = "Em Andamento";
+    public static final String STATUS_TRAVELING = "Em Viagem";
     public static final String STATUS_COMPLETED = "Finalizada";
     public static final String STATUS_CANCELED = "Cancelada";
 
@@ -46,6 +46,18 @@ public class Requisicao implements Serializable {
                 .child("requisicoes_abertas_motoristas").child(this.getDriver().getId());
 
         refRequisicaoMotorista.child("requisicao").setValue(this);
+
+    }
+
+    public void atualizarStatus(){
+        //Update the requisicoes node
+        DatabaseReference refRequisicao = ConfigFirebase.getDatabaseReference()
+                .child("requisicoes").child(this.getId());
+
+        Map requisicao = new HashMap();
+        requisicao.put("status", this.getStatus());
+
+        refRequisicao.updateChildren(requisicao);
 
     }
 
