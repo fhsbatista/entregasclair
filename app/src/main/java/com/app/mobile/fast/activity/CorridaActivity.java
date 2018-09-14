@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -52,6 +53,7 @@ public class CorridaActivity extends AppCompatActivity
 
     private static final String TAG = CorridaActivity.class.getSimpleName();
     private Button mButton;
+    private FloatingActionButton mFabRota;
     private GoogleMap mMap;
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
@@ -82,6 +84,7 @@ public class CorridaActivity extends AppCompatActivity
 
 
         mButton = findViewById(R.id.bt_aceitar_corrida);
+        mFabRota = findViewById(R.id.fb_rota);
 
     }
 
@@ -279,6 +282,10 @@ public class CorridaActivity extends AppCompatActivity
             if (mRefRequisicao == null) {
                 listenerRequisicao();
             }
+
+            //Ativa o floating action button que permite que o motorista faça o calculo da rota
+            mFabRota.setVisibility(View.VISIBLE);
+            mFabRota.setClickable(true);
         }
 
 

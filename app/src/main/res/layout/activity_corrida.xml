@@ -20,7 +20,9 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_home_passageiro" />
+    <include
+        android:id="@+id/include"
+        layout="@layout/content_home_passageiro" />
 
     <Button
         android:id="@+id/bt_aceitar_corrida"
@@ -32,6 +34,21 @@
         android:theme="@style/TemaBotaoPadrao"
         android:onClick="aceitarCorrida"
         />
+
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fb_rota"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:layout_marginBottom="77dp"
+        android:layout_marginRight="16dp"
+        android:clickable="false"
+        android:visibility="gone"
+        tools:visibility="visible"
+        app:fabSize="normal"
+        app:layout_anchor="@+id/include"
+        app:layout_anchorGravity="right|bottom"
+        app:srcCompat="@drawable/rota" />
 
 
 </android.support.design.widget.CoordinatorLayout>
