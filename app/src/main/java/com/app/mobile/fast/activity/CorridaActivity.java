@@ -285,9 +285,12 @@ public class CorridaActivity extends AppCompatActivity
                 listenerRequisicao();
             }
 
-            //Ativa o floating action button que permite que o motorista faça o calculo da rota
-            mFabRota.setVisibility(View.VISIBLE);
-            mFabRota.setClickable(true);
+            //Se o motorista tiver aceitado a corrida, Ativa o floating action button que permite que o motorista faça o calculo da rota
+            if(!mRequisicao.getStatus().equals(Requisicao.STATUS_WAITING)){
+                mFabRota.setVisibility(View.VISIBLE);
+                mFabRota.setClickable(true);
+            }
+
         }
 
 
@@ -336,10 +339,11 @@ public class CorridaActivity extends AppCompatActivity
     public void tracarRota(View view){
         if (mRequisicao != null) {
             if(!mRequisicao.getStatus().isEmpty()){
+                String status = mRequisicao.getStatus();
                 String latitude = "";
                 String longitute = "";
 
-                switch (mRequisicao.getStatus()){
+                switch (status){
 
                     case Requisicao.STATUS_ON_THE_WAY :
                         latitude = String.valueOf(mRequisicao.getLatitude());
