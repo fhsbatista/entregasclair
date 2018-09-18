@@ -1,6 +1,7 @@
 package com.app.mobile.fast.model;
 
 import android.provider.ContactsContract;
+import android.util.Log;
 
 import com.app.mobile.fast.config.ConfigFirebase;
 import com.google.firebase.database.DatabaseReference;
@@ -10,6 +11,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Requisicao implements Serializable {
+
+    private static final String TAG = Requisicao.class.getSimpleName();
 
     public static final String STATUS_WAITING = "Aguardando";
     public static final String STATUS_ON_THE_WAY = "A Caminho";
@@ -158,12 +161,24 @@ public class Requisicao implements Serializable {
     private void cancelarReferenciaUsuarioRequisicao() {
         //Cancel a reference between the ride and the user which will be used to control whether the user
         //already has a ride to complete
-
+        //passenger's reference
         DatabaseReference refUserRequestReference = ConfigFirebase.getDatabaseReference()
                 .child("requisicoes_usuarios")
                 .child(this.getPassenger().getId());
 
         refUserRequestReference.removeValue();
+
+        //driver's reference
+        try {
+            DatabaseReference refDriverRequestReference = ConfigFirebase.getDatabaseReference()
+                    .child("requisicoes_abertas_motoristas")
+                    .child(this.getDriver().getId());
+
+            refDriverRequestReference.removeValue();
+        } catch (NullPointerException e){
+            Log.d(TAG, "Nao existe referencia do motorista para ser excluida");
+        }
+
 
 
     }
