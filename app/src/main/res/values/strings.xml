@@ -13,4 +13,8 @@
     <string name="activity_corrida_on_the_way">A caminho do passageiro</string>
     <string name="map_marker_where_the_user_is">Voce esta aqui</string>
     <string name="map_marker_where_the_passenger_is">O passageiro esta aqui</string>
+    <string name="map_destino_passageir">Destino do passageiro</string>
+    <string name="map_a_caminho_do_passageiro">A caminho do passageiro</string>
+    <string name="map_a_caminho_do_destino">A caminho do destino</string>
+    <string name="map_marker_destination">Destino do passageiro</string>
 </resources>

@@ -28,12 +28,13 @@
         android:id="@+id/bt_aceitar_corrida"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:text="@string/activity_corrida_accept_ride"
-        android:layout_margin="16dp"
         android:layout_gravity="bottom"
+        android:layout_margin="16dp"
+        android:text="@string/activity_corrida_accept_ride"
+        android:onClick="onClickButtonAceitar"
         android:theme="@style/TemaBotaoPadrao"
-        android:onClick="aceitarCorrida"
-        />
+        android:visibility="gone"
+        tools:visibility="visible" />
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fb_rota"
@@ -43,7 +44,7 @@
         android:layout_marginBottom="77dp"
         android:layout_marginRight="16dp"
         android:clickable="false"
-        android:onClick="tracarRota"
+        android:onClick="onClickFabRota"
         android:visibility="gone"
         tools:visibility="visible"
         app:fabSize="normal"
