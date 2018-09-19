@@ -22,6 +22,7 @@ import android.widget.Toast;
 
 import com.app.mobile.fast.R;
 import com.app.mobile.fast.config.ConfigFirebase;
+import com.app.mobile.fast.helper.LocalizaoHelper;
 import com.app.mobile.fast.helper.UserProfile;
 import com.app.mobile.fast.model.Destino;
 import com.app.mobile.fast.model.Motorista;
@@ -45,6 +46,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.DecimalFormat;
 
 public class CorridaActivity extends AppCompatActivity
         implements OnMapReadyCallback {
@@ -251,12 +254,13 @@ public class CorridaActivity extends AppCompatActivity
                             //Centralizar camera do mapa no marcador do destino
                             if(mMarkerDestino != null) mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMarkerDestino.getPosition(), 15));
 
+                            //Calcula o valor da corrida
+                            calculaValorDaCorrida();
+
                             //Atualiza o texto do botao
-                            mButtonAceitar.setText("Corrida Finalizada Valor: ");
-
-
-
-
+                            DecimalFormat df = new DecimalFormat("0.00");
+                            String valorCorrida = df.format(calculaValorDaCorrida());
+                            mButtonAceitar.setText("Corrida Finalizada Valor: " + valorCorrida);
                             break;
 
                         default:
@@ -274,6 +278,27 @@ public class CorridaActivity extends AppCompatActivity
             }
         });
 
+    }
+
+    private double calculaValorDaCorrida() {
+
+        double valorMetro = 0.005;
+
+        Location localInicial = new Location("Local inicial");
+        localInicial.setLatitude(mRequisicao.getLatitude());
+        localInicial.setLongitude(mRequisicao.getLongitude());
+
+        Destino destino = mRequisicao.getDestination();
+        Location localFinal = new Location("Local final");
+        localFinal.setLatitude(Double.parseDouble(destino.getLatitude()));
+        localFinal.setLongitude(Double.parseDouble(destino.getLongitute()));
+
+        double distanciaPercorrida = LocalizaoHelper.calcularDistancia(localInicial, localFinal);
+
+
+        double valorCorrida = distanciaPercorrida * valorMetro;
+
+        return valorCorrida;
     }
 
     private void layoutAtivarBotaoRotas(boolean isAtivar) {
