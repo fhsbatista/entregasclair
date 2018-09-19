@@ -71,6 +71,7 @@ public class CorridaActivity extends AppCompatActivity
     private Marker mMarkerPassageiro;
     private Marker mMarkerMotorista;
     private Marker mMarkerDestino;
+    private Circle mCirclePassageiro;
 
     //Controles
     //Esta variavel sera usada para decidir se a rota a ser traçada e em direçao ao passageiro ou entao ao destino
@@ -147,7 +148,7 @@ public class CorridaActivity extends AppCompatActivity
 
 
         //Insere um circulo ao redor do marcador do passageiro, para representar a area de 50m ao redor dele
-        Circle circle = mMap.addCircle(
+        mCirclePassageiro = mMap.addCircle(
                 new CircleOptions()
                         .center(location)
                         .fillColor(Color.argb(90, 255, 153, 0))
@@ -230,8 +231,24 @@ public class CorridaActivity extends AppCompatActivity
                             break;
 
                         case Requisicao.STATUS_COMPLETED:
+                            //Desabilita o botao de rotas
                             layoutAtivarBotaoRotas(false);
+
+                            //Finaliza a corrida retirando as referencias de usuario e motorista vinculadas
                             requisicao.finalizar();
+
+                            //Remove os marcadores do passageiro e do motorista
+                            if(mMarkerPassageiro != null){
+                                mMarkerPassageiro.remove();
+                            }
+                            if(mMarkerMotorista != null){
+                                mMarkerMotorista.remove();
+                            }
+
+                            //Remove o circulo do marcador do passageiro
+                            mCirclePassageiro.remove();
+
+                            break;
 
                         default:
                             break;

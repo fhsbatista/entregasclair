@@ -182,6 +182,8 @@ public class Requisicao implements Serializable {
 
 
     }
+    //Este metodo foi criado somente para criar uma semantica melhor na chamada dos metodos, ja que este abaixo sera usado quando a corrida for finalizada, e o outro sera usado quando a corrida for cancelada
+
 
     public void finalizar() {
 
