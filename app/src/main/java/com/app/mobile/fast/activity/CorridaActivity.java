@@ -251,6 +251,12 @@ public class CorridaActivity extends AppCompatActivity
                             //Centralizar camera do mapa no marcador do destino
                             if(mMarkerDestino != null) mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMarkerDestino.getPosition(), 15));
 
+                            //Atualiza o texto do botao
+                            mButtonAceitar.setText("Corrida Finalizada Valor: ");
+
+
+
+
                             break;
 
                         default:
