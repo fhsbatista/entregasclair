@@ -4,7 +4,6 @@ import android.Manifest;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
@@ -19,7 +18,6 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.app.mobile.fast.R;
@@ -32,7 +30,6 @@ import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.GeoQuery;
 import com.firebase.geofire.GeoQueryEventListener;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -109,7 +106,9 @@ public class CorridaActivity extends AppCompatActivity
         7 - Tambem sera adicionado o listener que ficara verificando as mudanças da requisicao no firebase
         8 - Com a verificao das requisicoes ativadas, quando o status da requisicao recuperada for a ON_THE_WAY, sera ativado o listener do geofire com o metodo firebaseAtivarListenerLocalizacaoGeo()
         9 - No metodo firebaseAtivarListenerLocalizacaoGeo(), quando o motorista entrar no raio de 50m do passageiros, o status da requisicao no firebase sera atualizado para TRAVELING.
-        10 - A partir deste momento, ainda dentro do metodo firebaseAtivarListenerLocalizacaoGeo(), sera chamado o metodo adicionarMarcadorDestino(), e consequentemente o marcador do destino sera inserido e a camera sera centralizada pelo metodo centralizarMarcadores(). Tambem sera inserido o CIRCULO no marcador do destino
+        10 - A partir deste momento, ainda dentro do metodo firebaseAtivarListenerLocalizacaoGeo(), sera chamado o metodo adicionarMarcadorDestino(), e consequentemente o marcador do destino sera inserido e a camera sera centralizada pelo metodo centralizarMarcadores(). Tambem sera inserido o CIRCULO no marcador do destino, e ativado o listener que ira monitorar o motorista para saber quando ele chegou no destino
+        11 - Quando o motorista chegar ao destino, a requisicao recebera o status de FINALIZADA.
+
 
 
          */
@@ -222,7 +221,7 @@ public class CorridaActivity extends AppCompatActivity
                              * um raio de 50m do passageiro
                              */
                             layoutAtivarBotaoRotas();
-                            firebaseAtivarListenerLocalizacaoGeoFire();
+                            firebaseAtivarListenerLocalizacaoGeoFirePassageiro();
                             break;
 
                         case Requisicao.STATUS_TRAVELING:
@@ -252,7 +251,7 @@ public class CorridaActivity extends AppCompatActivity
 
     }
 
-    private void firebaseAtivarListenerLocalizacaoGeoFire() {
+    private void firebaseAtivarListenerLocalizacaoGeoFirePassageiro() {
 
         /**
          * Coordenadas do passageiro, estas coordenas serao as que o GeoQuery ira utilizar para comparar com a
@@ -283,6 +282,9 @@ public class CorridaActivity extends AppCompatActivity
 
                     //Insere o marcador do destino
                     adicionarMarcadorDestino();
+
+                    //Ativa o listener que ira monitorar a viagem a partir de agora em direçao ao destino
+                    firebaseAtivarListenerLocalizacaoGeoFireDestino();
                 }
             }
 
@@ -311,6 +313,68 @@ public class CorridaActivity extends AppCompatActivity
 
 
     }
+
+    private void firebaseAtivarListenerLocalizacaoGeoFireDestino() {
+
+        Log.d(TAG, "Passo 11: Listener de monitoramento em direçao ao destino foi ativado");
+
+        /**
+         * Coordenadas do destino, estas coordenas serao as que o GeoQuery ira utilizar para comparar com a
+         Localizaçao do motorista
+         **/
+        Destino destino = mRequisicao.getDestination();
+        Double latitude = Double.parseDouble(destino.getLatitude());
+        Double longitude = Double.parseDouble(destino.getLongitute());
+
+        //Referencia da localizacao do motorista, esta referencia tera sempre a posicao do motorista em tempo real
+        DatabaseReference refLocalizacoesUsuarios = ConfigFirebase.getDatabaseReference()
+                .child("localizacoes_usuarios");
+        GeoFire geoFire = new GeoFire(refLocalizacoesUsuarios);
+        GeoLocation geoLocation = new GeoLocation(latitude, longitude);
+        final GeoQuery geoQuery = geoFire.queryAtLocation(geoLocation, 0.05); //Radius em kilometros
+        geoQuery.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                if(key.equals(UserProfile.getMotoristaLogado().getId())){
+                    //Avisa o motorista para que procure o passageiro
+                    Toast.makeText(CorridaActivity.this, "Voce chegou ao destino do passageiro", Toast.LENGTH_LONG).show();
+
+                    //Remove o listener do geoquery
+                    geoQuery.removeAllListeners();
+
+                    //Atualiza o status da requisicao
+                    mRequisicao.setStatus(Requisicao.STATUS_COMPLETED);
+                    mRequisicao.atualizarStatus();
+
+                }
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+                Log.d(TAG, "onKeyExited");
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                Log.d(TAG, "onKeyMoved");
+
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                Log.d(TAG, "onGeoQueryReady");
+
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+                Log.d(TAG, "onGeoQueryError");
+            }
+        });
+
+
+    }
+
 
     private void adicionarMarcadorDestino() {
 
