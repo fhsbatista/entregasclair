@@ -108,6 +108,7 @@ public class CorridaActivity extends AppCompatActivity
         9 - No metodo firebaseAtivarListenerLocalizacaoGeo(), quando o motorista entrar no raio de 50m do passageiros, o status da requisicao no firebase sera atualizado para TRAVELING.
         10 - A partir deste momento, ainda dentro do metodo firebaseAtivarListenerLocalizacaoGeo(), sera chamado o metodo adicionarMarcadorDestino(), e consequentemente o marcador do destino sera inserido e a camera sera centralizada pelo metodo centralizarMarcadores(). Tambem sera inserido o CIRCULO no marcador do destino, e ativado o listener que ira monitorar o motorista para saber quando ele chegou no destino
         11 - Quando o motorista chegar ao destino, a requisicao recebera o status de FINALIZADA.
+        12 - Consequentemente, o listener do firebase ira identificar que a requisiçao foi finalizada, e ira: desabilitar o botao de rota, remover marcadores do motorista e do passageiro, centralizar a camera no marcador de destino, ira remover as referencias no firebase de requisicao aberta do motorista e do passageiro, e ira tambem mudar o texto do botao para "corrida finalizada + valor"
 
 
 
@@ -220,13 +221,16 @@ public class CorridaActivity extends AppCompatActivity
                              * ao passageiro, e entao executar açoes especificas quando o motorista chegar em
                              * um raio de 50m do passageiro
                              */
-                            layoutAtivarBotaoRotas();
+                            layoutAtivarBotaoRotas(true);
                             firebaseAtivarListenerLocalizacaoGeoFirePassageiro();
                             break;
 
                         case Requisicao.STATUS_TRAVELING:
                             mButtonAceitar.setText(R.string.map_a_caminho_do_destino);
                             break;
+
+                        case Requisicao.STATUS_COMPLETED:
+                            layoutAtivarBotaoRotas(false);
 
                         default:
                             break;
@@ -245,10 +249,13 @@ public class CorridaActivity extends AppCompatActivity
 
     }
 
-    private void layoutAtivarBotaoRotas() {
+    private void layoutAtivarBotaoRotas(boolean isAtivar) {
 
-        mFabRotas.setVisibility(View.VISIBLE);
-
+        //Caso o metodo seja chamado com o parametro true, o botao sera ativado, do contrario, sera desativado (pois ele ja estava ativado antes)
+        if(isAtivar)
+            mFabRotas.setVisibility(View.VISIBLE);
+        else
+            mFabRotas.setVisibility(View.GONE);
     }
 
     private void firebaseAtivarListenerLocalizacaoGeoFirePassageiro() {
