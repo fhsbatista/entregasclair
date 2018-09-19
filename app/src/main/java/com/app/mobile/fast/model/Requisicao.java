@@ -182,4 +182,9 @@ public class Requisicao implements Serializable {
 
 
     }
+
+    public void finalizar() {
+
+        cancelarReferenciaUsuarioRequisicao();
+    }
 }

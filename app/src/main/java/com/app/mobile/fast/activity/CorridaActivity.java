@@ -231,6 +231,7 @@ public class CorridaActivity extends AppCompatActivity
 
                         case Requisicao.STATUS_COMPLETED:
                             layoutAtivarBotaoRotas(false);
+                            requisicao.finalizar();
 
                         default:
                             break;
