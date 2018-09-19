@@ -109,7 +109,7 @@ public class CorridaActivity extends AppCompatActivity
         7 - Tambem sera adicionado o listener que ficara verificando as mudanças da requisicao no firebase
         8 - Com a verificao das requisicoes ativadas, quando o status da requisicao recuperada for a ON_THE_WAY, sera ativado o listener do geofire com o metodo firebaseAtivarListenerLocalizacaoGeo()
         9 - No metodo firebaseAtivarListenerLocalizacaoGeo(), quando o motorista entrar no raio de 50m do passageiros, o status da requisicao no firebase sera atualizado para TRAVELING.
-        10 - A partir deste momento, ainda dentro do metodo firebaseAtivarListenerLocalizacaoGeo(), sera chamado o metodo adicionarMarcadorDestino(), e consequentemente o marcador do destino sera inserido e a camera sera centralizada pelo metodo centralizarMarcadores().
+        10 - A partir deste momento, ainda dentro do metodo firebaseAtivarListenerLocalizacaoGeo(), sera chamado o metodo adicionarMarcadorDestino(), e consequentemente o marcador do destino sera inserido e a camera sera centralizada pelo metodo centralizarMarcadores(). Tambem sera inserido o CIRCULO no marcador do destino
 
 
          */
@@ -333,6 +333,14 @@ public class CorridaActivity extends AppCompatActivity
 
         centralizarMarcadores(mMarkerMotorista, mMarkerDestino);
 
+        //Insere um circulo ao redor do marcador do destino, para representar a area de 50m ao redor dele
+        Circle circle = mMap.addCircle(
+                new CircleOptions()
+                        .center(latLng)
+                        .fillColor(Color.argb(90, 255, 153, 0))
+                        .strokeColor(Color.argb(190, 255, 152, 0))
+                        .radius(50) //metros
+        );
 
 
 
