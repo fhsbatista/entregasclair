@@ -248,6 +248,9 @@ public class CorridaActivity extends AppCompatActivity
                             //Remove o circulo do marcador do passageiro
                             mCirclePassageiro.remove();
 
+                            //Centralizar camera do mapa no marcador do destino
+                            if(mMarkerDestino != null) mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMarkerDestino.getPosition(), 15));
+
                             break;
 
                         default:
