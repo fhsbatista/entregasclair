@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.mobile.fast.R;
@@ -52,6 +53,8 @@ public class HomePassageiroActivity extends AppCompatActivity
     private EditText mLocalDestino;
     private Button mChamarCarro;
     private LinearLayout mLayoutEnderecos;
+    private TextView mTextViewAvisoMotoristaACaminho;
+
 
     private GoogleMap mMap;
     private LocationManager mLocationManager;
@@ -59,6 +62,7 @@ public class HomePassageiroActivity extends AppCompatActivity
     private LatLng mLatLng;
     private boolean isRideRequested = false;
     private Requisicao mRequisicao;
+
 
 
     @Override
@@ -71,6 +75,7 @@ public class HomePassageiroActivity extends AppCompatActivity
         mLayoutEnderecos = findViewById(R.id.layout_enderecos);
         mLocalDestino = findViewById(R.id.et_local_destino);
         mChamarCarro = findViewById(R.id.bt_chamar_uber);
+        mTextViewAvisoMotoristaACaminho = findViewById(R.id.tv_motorista_a_caminho);
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -103,10 +108,16 @@ public class HomePassageiroActivity extends AppCompatActivity
                     refRequesicoes.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                            mRequisicao = dataSnapshot.getValue(Requisicao.class);
-                            mChamarCarro.setText(R.string.activity_home_passageiro_cancel_ride);
-                            mLayoutEnderecos.setVisibility(View.GONE);
-                            isRideRequested = true;
+
+                            if (dataSnapshot.getValue() != null) {
+                                mRequisicao = dataSnapshot.getValue(Requisicao.class);
+                                mChamarCarro.setText(R.string.activity_home_passageiro_cancel_ride);
+                                mLayoutEnderecos.setVisibility(View.GONE);
+                                isRideRequested = true;
+                                ativarListenerRequisicao();
+                            }
+
+
                         }
 
                         @Override
@@ -183,6 +194,7 @@ public class HomePassageiroActivity extends AppCompatActivity
                             mLayoutEnderecos.setVisibility(View.GONE);
                             mRequisicao = criaRequisicao(destino);
                             mRequisicao.salvarRequisicao();
+                            ativarListenerRequisicao();
 
                         }
                     }).setNegativeButton("Recusar", new DialogInterface.OnClickListener() {
@@ -204,6 +216,7 @@ public class HomePassageiroActivity extends AppCompatActivity
 
         } else {
             mLayoutEnderecos.setVisibility(View.VISIBLE);
+            layoutDesativarAvisoMotoristaACaminho();
             isRideRequested = false;
             mChamarCarro.setText(R.string.activity_home_passageiro_request_car);
             mRequisicao.cancelarRequisicao();
@@ -236,7 +249,6 @@ public class HomePassageiroActivity extends AppCompatActivity
 
         return requisicao;
 
-
     }
 
 
@@ -256,8 +268,6 @@ public class HomePassageiroActivity extends AppCompatActivity
         }
 
         return null;
-
-
     }
 
     private void recuperarLocalizacaoUsuario() {
@@ -313,6 +323,45 @@ public class HomePassageiroActivity extends AppCompatActivity
         } else {
             Toast.makeText(this, "Voce tem problemas com permissoes", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    private void ativarListenerRequisicao(){
+
+        DatabaseReference refRequisicao = ConfigFirebase.getDatabaseReference()
+                .child("requisicoes").child(mRequisicao.getId());
+
+        refRequisicao.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+
+                Requisicao requisicao = dataSnapshot.getValue(Requisicao.class);
+
+                if(requisicao.getStatus().equals(Requisicao.STATUS_ON_THE_WAY)){
+                    Toast.makeText(HomePassageiroActivity.this, "O motorista esta a caminho", Toast.LENGTH_SHORT).show();
+                    layoutAtivarAvisoMotoristaACaminho();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+
+            }
+        });
+
+
+    }
+
+    private void layoutAtivarAvisoMotoristaACaminho(){
+
+        mTextViewAvisoMotoristaACaminho.setVisibility(View.VISIBLE);
+
+    }
+
+    private void layoutDesativarAvisoMotoristaACaminho(){
+
+        mTextViewAvisoMotoristaACaminho.setVisibility(View.GONE);
 
     }
 

@@ -78,4 +78,21 @@
         />
 
 
+    <TextView
+        android:id="@+id/tv_motorista_a_caminho"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Motorista a caminho"
+        android:textColor="@color/colorPrimaryDark"
+        android:background="@android:color/white"
+        android:layout_margin="64dp"
+        android:layout_gravity="top|center"
+        android:padding="6dp"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        tools:visibility="visible"
+        />
+
+
 </android.support.design.widget.CoordinatorLayout>
