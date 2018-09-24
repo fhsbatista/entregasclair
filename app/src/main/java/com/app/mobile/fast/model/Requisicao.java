@@ -27,10 +27,13 @@ public class Requisicao implements Serializable {
     private Destino destination;
     private Double latitude;
     private Double longitude;
+    private Double distance;
 
     public Requisicao(){
 
     }
+
+
 
     public void atualizar(){
 
@@ -118,6 +121,14 @@ public class Requisicao implements Serializable {
 
     public void setDestination(Destino destination) {
         this.destination = destination;
+    }
+
+    public Double getDistance() {
+        return distance;
+    }
+
+    public void setDistance(Double distance) {
+        this.distance = distance;
     }
 
     public void salvarRequisicao() {

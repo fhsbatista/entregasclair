@@ -26,6 +26,7 @@ import android.widget.Toast;
 import com.app.mobile.fast.R;
 import com.app.mobile.fast.adapter.RequisicaoAdapter;
 import com.app.mobile.fast.config.ConfigFirebase;
+import com.app.mobile.fast.helper.LocalizaoHelper;
 import com.app.mobile.fast.helper.RecyclerItemClickListener;
 import com.app.mobile.fast.helper.UserProfile;
 import com.app.mobile.fast.model.Motorista;
@@ -168,10 +169,23 @@ public class HomeMotoristaActivity extends AppCompatActivity {
 
                 String latitude = String.valueOf(location.getLatitude());
                 String longitude = String.valueOf(location.getLongitude());
-                mLocationManager.removeUpdates(mLocationListener);
 
                 mMotorista.setLatitude(latitude);
                 mMotorista.setLongitude(longitude);
+
+                if(mListRequests.size() > 0){
+                    for(Requisicao requisicao : mListRequests){
+                        Location locationRequisicao = new Location("Localizacao passageiro");
+                        locationRequisicao.setLatitude(requisicao.getLatitude());
+                        locationRequisicao.setLongitude(requisicao.getLongitude());
+
+                        //Este metodo calcula a distancia entre a distancia atual do motorista e a localizacao do passageiro
+                        double distanciaMotoristaPassageiro = LocalizaoHelper.calcularDistancia(location, locationRequisicao);
+                        requisicao.setDistance(distanciaMotoristaPassageiro);
+
+                        mAdapter.notifyDataSetChanged();
+                    }
+                }
             }
 
             @Override

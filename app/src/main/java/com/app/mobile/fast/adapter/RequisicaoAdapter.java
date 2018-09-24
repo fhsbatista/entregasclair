@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.app.mobile.fast.R;
+import com.app.mobile.fast.helper.LocalizaoHelper;
 import com.app.mobile.fast.model.Passageiro;
 import com.app.mobile.fast.model.Requisicao;
 import com.app.mobile.fast.model.Usuario;
@@ -39,7 +40,11 @@ public class RequisicaoAdapter extends RecyclerView.Adapter<RequisicaoAdapter.My
 
         Requisicao requisicao = mRequisicaoList.get(position);
         Usuario usuario = requisicao.getPassenger();
-        holder.distance.setText("1 km aproximadamente");
+        if(requisicao.getDistance() == null){
+            holder.distance.setText("Calculando distancia");
+        } else{
+            holder.distance.setText(LocalizaoHelper.criarStringDistanciaEstilizada(requisicao.getDistance()));
+        }
         holder.userName.setText(usuario.getNome());
 
 
