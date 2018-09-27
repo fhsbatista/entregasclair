@@ -37,6 +37,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -62,30 +64,88 @@ public class HomePassageiroActivity extends AppCompatActivity
     private LatLng mLatLng;
     private boolean isRideRequested = false;
     private Requisicao mRequisicao;
-
+    private Marker mMarkerPassageiro;
+    private Marker mMarkerDriver;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_passageiro);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
 
-        mLayoutEnderecos = findViewById(R.id.layout_enderecos);
-        mLocalDestino = findViewById(R.id.et_local_destino);
-        mChamarCarro = findViewById(R.id.bt_chamar_uber);
-        mTextViewAvisoMotoristaACaminho = findViewById(R.id.tv_motorista_a_caminho);
 
+        //Este metodo ira inicializar os elementos do layout
+        inicializarElementosUI();
+
+
+        //Este metodo configura o mapa e seu callback
+        configurarMapa();
+
+//        verificaRequisicaoPendente();
+
+
+
+
+    }
+
+    private void addMarcadorPassageiro(LatLng latLng){
+
+        if(mMarkerPassageiro != null){
+            mMarkerPassageiro.remove();
+        }
+
+
+        mMarkerPassageiro = mMap.addMarker(new MarkerOptions()
+            .title("O passageiro esta aqui")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.usuario))
+            .position(latLng));
+
+        centralizarMarcadores();
+
+
+
+    }
+
+    private void centralizarMarcadores() {
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+
+        if (mMarkerPassageiro != null) {
+            builder.include(mMarkerPassageiro.getPosition());
+        }
+
+        if (mMarkerDriver != null) {
+            builder.include(mMarkerDriver.getPosition());
+        }
+
+        LatLngBounds bounds = builder.build();
+
+        //Get the width and height of the device's screen
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = (int) ((getResources().getDisplayMetrics().heightPixels) * 0.85);
+        int padding = (int) (width * 0.15);
+
+        //Centralize the markers
+        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding));
+
+
+    }
+
+    private void configurarMapa() {
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+    }
 
-        verificaRequisicaoPendente();
+    private void inicializarElementosUI() {
 
-
-
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        mLayoutEnderecos = findViewById(R.id.layout_enderecos);
+        mLocalDestino = findViewById(R.id.et_local_destino);
+        mChamarCarro = findViewById(R.id.bt_chamar_uber);
+        mTextViewAvisoMotoristaACaminho = findViewById(R.id.tv_motorista_a_caminho);
 
     }
 
@@ -282,17 +342,11 @@ public class HomePassageiroActivity extends AppCompatActivity
                 double latitude = location.getLatitude();
                 double longitude = location.getLongitude();
 
-                //Clear markers which are already displayed on the map
-                mMap.clear();
-
                 // Add a marker in the current position of the user
                 mLatLng = new LatLng(latitude, longitude);
-                mMap.addMarker(new MarkerOptions()
-                        .position(mLatLng)
-                        .title("Voce esta aqui")
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.usuario)));
-                //Move the camera and zoom the screen to the user's location
-                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mLatLng, 17));
+
+                //Adicionar o marcador do passageiro
+                addMarcadorPassageiro(mLatLng);
 
 
             }
