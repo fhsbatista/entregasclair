@@ -31,7 +31,9 @@ import com.app.mobile.fast.helper.UserProfile;
 import com.app.mobile.fast.model.Destino;
 import com.app.mobile.fast.model.Passageiro;
 import com.app.mobile.fast.model.Requisicao;
-import com.app.mobile.fast.model.Usuario;
+import com.firebase.geofire.GeoFire;
+import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -83,12 +85,14 @@ public class HomePassageiroActivity extends AppCompatActivity
         //Este metodo ira inicializar os elementos do layout
         inicializarElementosUI();
 
+        //Mostra a barra de progressdialog
+        mostrarProgressBar();
+
 
         //Este metodo configura o mapa e seu callback
         configurarMapa();
 
-        //Ativa progress bar e esconde os outros elementos, ate que o posicao do usuario seja resgatada
-        mostrarProgressBar();
+
 
 //        verificaRequisicaoPendente();
 
@@ -145,13 +149,24 @@ public class HomePassageiroActivity extends AppCompatActivity
 
         LatLngBounds bounds = builder.build();
 
-        //Get the width and height of the device's screen
-        int width = getResources().getDisplayMetrics().widthPixels;
-        int height = (int) ((getResources().getDisplayMetrics().heightPixels) * 0.85);
-        int padding = (int) (width * 0.15);
+        if(mMarkerDriver != null && mMarkerPassageiro != null){
+            //Get the width and height of the device's screen
+            int width = getResources().getDisplayMetrics().widthPixels;
+            int height = (int) ((getResources().getDisplayMetrics().heightPixels) * 0.85);
+            int padding = (int) (width * 0.15);
 
-        //Centralize the markers
-        mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding));
+            //Centralize the markers
+            mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, width, height, padding));
+        } else{
+            if(mMarkerPassageiro != null){
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMarkerPassageiro.getPosition(), 17));
+            }
+            if(mMarkerDriver != null){
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMarkerDriver.getPosition(), 17));
+            }
+        }
+
+
 
 
     }
@@ -419,9 +434,9 @@ public class HomePassageiroActivity extends AppCompatActivity
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
 
-                Requisicao requisicao = dataSnapshot.getValue(Requisicao.class);
+                mRequisicao = dataSnapshot.getValue(Requisicao.class);
 
-                if(requisicao.getStatus().equals(Requisicao.STATUS_ON_THE_WAY)){
+                if(mRequisicao.getStatus().equals(Requisicao.STATUS_ON_THE_WAY)){
                     Toast.makeText(HomePassageiroActivity.this, "O motorista esta a caminho", Toast.LENGTH_SHORT).show();
                     layoutAtivarAvisoMotoristaACaminho();
                 }
@@ -440,6 +455,67 @@ public class HomePassageiroActivity extends AppCompatActivity
     private void layoutAtivarAvisoMotoristaACaminho(){
 
         mTextViewAvisoMotoristaACaminho.setVisibility(View.VISIBLE);
+        mLayoutEnderecos.setVisibility(View.GONE);
+        ativarListenerPosicaoMotorista();
+
+    }
+
+    private void ativarListenerPosicaoMotorista() {
+
+
+        DatabaseReference refLocalizacaoMotorista = ConfigFirebase.getDatabaseReference()
+                .child("localizacoes_usuarios");
+
+
+        final GeoFire geoFire = new GeoFire(refLocalizacaoMotorista);
+
+        refLocalizacaoMotorista.child(mRequisicao.getDriver().getId())
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                        geoFire.getLocation(mRequisicao.getDriver().getId(), new LocationCallback() {
+                            @Override
+                            public void onLocationResult(String key, GeoLocation location) {
+
+                                if(key.equals(mRequisicao.getDriver().getId())){
+                                    LatLng latLng = new LatLng(location.latitude, location.longitude);
+                                    addMarcadorDriver(latLng);
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                    }
+                });
+
+
+
+
+    }
+
+    private void addMarcadorDriver(LatLng latLng) {
+
+        if(mMarkerDriver != null){
+            mMarkerDriver.remove();
+        }
+
+        mMarkerDriver = mMap.addMarker(new MarkerOptions()
+            .title("O motorista esta aqui")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.carro))
+            .position(latLng));
+
+
+        centralizarMarcadores();
+
 
     }
 
