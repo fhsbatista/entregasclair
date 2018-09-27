@@ -71,6 +71,7 @@ public class HomePassageiroActivity extends AppCompatActivity
     //Marcadores
     private Marker mMarkerPassageiro;
     private Marker mMarkerDriver;
+    private Marker mMarkerDestino;
 
     //UI
     private ProgressBar mProgressBarLoading;
@@ -147,8 +148,13 @@ public class HomePassageiroActivity extends AppCompatActivity
             builder.include(mMarkerDriver.getPosition());
         }
 
+        if(mMarkerDestino != null){
+            builder.include(mMarkerDestino.getPosition());
+        }
+
         LatLngBounds bounds = builder.build();
 
+        //Verifica se os marcadores do motorista e do passageiro sao nulos, pois caso sejam, quer dizer que a tela ainda nao foi totalmente carregada, e entao a camera ira focalizar apenas um marcador.
         if(mMarkerDriver != null && mMarkerPassageiro != null){
             //Get the width and height of the device's screen
             int width = getResources().getDisplayMetrics().widthPixels;
@@ -436,11 +442,27 @@ public class HomePassageiroActivity extends AppCompatActivity
 
                 mRequisicao = dataSnapshot.getValue(Requisicao.class);
 
-                if(mRequisicao.getStatus().equals(Requisicao.STATUS_ON_THE_WAY)){
-                    Toast.makeText(HomePassageiroActivity.this, "O motorista esta a caminho", Toast.LENGTH_SHORT).show();
-                    layoutAtivarAvisoMotoristaACaminho();
-                }
+                switch (mRequisicao.getStatus()){
 
+                    case Requisicao.STATUS_ON_THE_WAY :
+                        Toast.makeText(HomePassageiroActivity.this, "O motorista esta a caminho", Toast.LENGTH_SHORT).show();
+                        layoutAtivarAvisoMotoristaACaminho();
+                        break;
+                    case Requisicao.STATUS_TRAVELING :
+                        Destino destino = mRequisicao.getDestination();
+                        LatLng latLng = new LatLng(Double.parseDouble(destino.getLatitude()), Double.parseDouble(destino.getLongitute()));
+                        addMarcadorDestino(latLng);
+                        mTextViewAvisoMotoristaACaminho.setText("A caminho do destino");
+                        break;
+
+                    case Requisicao.STATUS_COMPLETED :
+
+                        layoutDesativarAvisoMotoristaACaminho();
+                        Toast.makeText(HomePassageiroActivity.this, "Corrida finalizada", Toast.LENGTH_SHORT).show();
+
+                    default:
+                        break;
+                }
             }
 
             @Override
@@ -450,6 +472,21 @@ public class HomePassageiroActivity extends AppCompatActivity
         });
 
 
+    }
+
+    private void addMarcadorDestino(LatLng latLng) {
+
+        if (mMarkerDestino != null) {
+            mMarkerDestino.remove();
+        }
+
+
+        mMarkerDestino = mMap.addMarker(new MarkerOptions()
+            .title("O seu destino esta aqui")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.destino))
+            .position(latLng));
+
+        centralizarMarcadores();
     }
 
     private void layoutAtivarAvisoMotoristaACaminho(){
