@@ -21,6 +21,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -64,8 +65,13 @@ public class HomePassageiroActivity extends AppCompatActivity
     private LatLng mLatLng;
     private boolean isRideRequested = false;
     private Requisicao mRequisicao;
+
+    //Marcadores
     private Marker mMarkerPassageiro;
     private Marker mMarkerDriver;
+
+    //UI
+    private ProgressBar mProgressBarLoading;
 
 
     @Override
@@ -81,10 +87,29 @@ public class HomePassageiroActivity extends AppCompatActivity
         //Este metodo configura o mapa e seu callback
         configurarMapa();
 
+        //Ativa progress bar e esconde os outros elementos, ate que o posicao do usuario seja resgatada
+        mostrarProgressBar();
+
 //        verificaRequisicaoPendente();
 
 
 
+
+    }
+
+    private void mostrarProgressBar(){
+
+        mLayoutEnderecos.setVisibility(View.GONE);
+        mChamarCarro.setVisibility(View.GONE);
+        mProgressBarLoading.setVisibility(View.VISIBLE);
+
+    }
+
+    private void esconderProgressBar(){
+
+        mLayoutEnderecos.setVisibility(View.VISIBLE);
+        mChamarCarro.setVisibility(View.VISIBLE);
+        mProgressBarLoading.setVisibility(View.GONE);
 
     }
 
@@ -146,6 +171,7 @@ public class HomePassageiroActivity extends AppCompatActivity
         mLocalDestino = findViewById(R.id.et_local_destino);
         mChamarCarro = findViewById(R.id.bt_chamar_uber);
         mTextViewAvisoMotoristaACaminho = findViewById(R.id.tv_motorista_a_caminho);
+        mProgressBarLoading = findViewById(R.id.pb_loading);
 
     }
 
@@ -347,6 +373,10 @@ public class HomePassageiroActivity extends AppCompatActivity
 
                 //Adicionar o marcador do passageiro
                 addMarcadorPassageiro(mLatLng);
+
+                //Esconde a progress bar caso esteja ativa
+                if(mProgressBarLoading.getVisibility() == View.VISIBLE)
+                    esconderProgressBar();
 
 
             }
