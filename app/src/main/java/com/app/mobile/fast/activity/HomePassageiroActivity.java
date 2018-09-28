@@ -94,8 +94,8 @@ public class HomePassageiroActivity extends AppCompatActivity
         configurarMapa();
 
 
-
-//        verificaRequisicaoPendente();
+        //Verifica se ja exista uma requisicao aberta para o usuario que solicitou
+        verificaRequisicaoPendente();
 
 
 
@@ -222,6 +222,7 @@ public class HomePassageiroActivity extends AppCompatActivity
                                 mLayoutEnderecos.setVisibility(View.GONE);
                                 isRideRequested = true;
                                 ativarListenerRequisicao();
+
                             }
 
 
@@ -445,10 +446,11 @@ public class HomePassageiroActivity extends AppCompatActivity
                 switch (mRequisicao.getStatus()){
 
                     case Requisicao.STATUS_ON_THE_WAY :
-                        Toast.makeText(HomePassageiroActivity.this, "O motorista esta a caminho", Toast.LENGTH_SHORT).show();
                         layoutAtivarAvisoMotoristaACaminho();
+                        Toast.makeText(HomePassageiroActivity.this, "O motorista esta a caminho", Toast.LENGTH_SHORT).show();
                         break;
                     case Requisicao.STATUS_TRAVELING :
+                        layoutAtivarAvisoMotoristaACaminho();
                         Destino destino = mRequisicao.getDestination();
                         LatLng latLng = new LatLng(Double.parseDouble(destino.getLatitude()), Double.parseDouble(destino.getLongitute()));
                         addMarcadorDestino(latLng);
