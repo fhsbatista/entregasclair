@@ -449,18 +449,25 @@ public class HomePassageiroActivity extends AppCompatActivity
                         layoutAtivarAvisoMotoristaACaminho();
                         Toast.makeText(HomePassageiroActivity.this, "O motorista esta a caminho", Toast.LENGTH_SHORT).show();
                         break;
+
                     case Requisicao.STATUS_TRAVELING :
                         layoutAtivarAvisoMotoristaACaminho();
                         Destino destino = mRequisicao.getDestination();
                         LatLng latLng = new LatLng(Double.parseDouble(destino.getLatitude()), Double.parseDouble(destino.getLongitute()));
                         addMarcadorDestino(latLng);
-                        mTextViewAvisoMotoristaACaminho.setText("A caminho do rota");
+                        mTextViewAvisoMotoristaACaminho.setText("A caminho do destino");
+                        mMarkerPassageiro.remove();
                         break;
 
                     case Requisicao.STATUS_COMPLETED :
 
                         layoutDesativarAvisoMotoristaACaminho();
                         Toast.makeText(HomePassageiroActivity.this, "Corrida finalizada", Toast.LENGTH_SHORT).show();
+                        mChamarCarro.setText("Corrida finalizada");
+                        mMarkerPassageiro.remove();
+                        mMarkerPassageiro = null;
+                        centralizarMarcadores();
+                        break;
 
                     default:
                         break;
