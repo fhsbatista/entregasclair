@@ -77,7 +77,7 @@ public class CorridaActivity extends AppCompatActivity
     private Circle mCirclePassageiro;
 
     //Controles
-    //Esta variavel sera usada para decidir se a rota a ser traçada e em direçao ao passageiro ou entao ao destino
+    //Esta variavel sera usada para decidir se a rota a ser traçada e em direçao ao usuario ou entao ao rota
     private boolean isDestinoAtivo = false;
 
     @Override
@@ -100,19 +100,19 @@ public class CorridaActivity extends AppCompatActivity
 
 
         /*Passos
-        1 - o metodo onMapReady quando finalizado, ira chamar o metodo para adicionar o marcador do passageiro
+        1 - o metodo onMapReady quando finalizado, ira chamar o metodo para adicionar o marcador do usuario
         2 - O metodo "adicionarMarcadorPassageiro" ira chamar o metodo que recupera a requisicao que chegou na activity pela intent
-        3 - a partir disto, ele ira inserir o marcador no mapa, e entao ira chamar o metodo "recuperarlocalizacaoMotorista", neste passo tambem sera inserido o circulo no marcador do passageiro.
+        3 - a partir disto, ele ira inserir o marcador no mapa, e entao ira chamar o metodo "recuperarlocalizacaoMotorista", neste passo tambem sera inserido o circulo no marcador do usuario.
         **Obs: No passo acima, conforme a localizacao do motorista mudar, o GeoFire sera atualizado e consequemente sera atualizada o no "localizacoes_usuarios" no firebase
         4 - O metodo recuperarLocalizacaoMotorista ira configurar a localizacao do usuario, e entao quando receber a localizacao o proprio metodo ira chamar o metodo "adicionarmarcadorMotorista.
-        5 - O metodo "centralizarMarcadores()" sera chamado, e este ira centralizar o marcador do motorista e do passageiro
+        5 - O metodo "centralizarMarcadores()" sera chamado, e este ira centralizar o marcador do motorista e do usuario
         6 - Uma vez que os marcadores foram centralizados, entao o botao de "Aceitar corrida" sera acionado
         7 - Tambem sera adicionado o listener que ficara verificando as mudanças da requisicao no firebase
         8 - Com a verificao das requisicoes ativadas, quando o status da requisicao recuperada for a ON_THE_WAY, sera ativado o listener do geofire com o metodo firebaseAtivarListenerLocalizacaoGeo()
         9 - No metodo firebaseAtivarListenerLocalizacaoGeo(), quando o motorista entrar no raio de 50m do passageiros, o status da requisicao no firebase sera atualizado para TRAVELING.
-        10 - A partir deste momento, ainda dentro do metodo firebaseAtivarListenerLocalizacaoGeo(), sera chamado o metodo adicionarMarcadorDestino(), e consequentemente o marcador do destino sera inserido e a camera sera centralizada pelo metodo centralizarMarcadores(). Tambem sera inserido o CIRCULO no marcador do destino, e ativado o listener que ira monitorar o motorista para saber quando ele chegou no destino
-        11 - Quando o motorista chegar ao destino, a requisicao recebera o status de FINALIZADA.
-        12 - Consequentemente, o listener do firebase ira identificar que a requisiçao foi finalizada, e ira: desabilitar o botao de rota, remover marcadores do motorista e do passageiro, centralizar a camera no marcador de destino, ira remover as referencias no firebase de requisicao aberta do motorista e do passageiro, e ira tambem mudar o texto do botao para "corrida finalizada + valor"
+        10 - A partir deste momento, ainda dentro do metodo firebaseAtivarListenerLocalizacaoGeo(), sera chamado o metodo adicionarMarcadorDestino(), e consequentemente o marcador do rota sera inserido e a camera sera centralizada pelo metodo centralizarMarcadores(). Tambem sera inserido o CIRCULO no marcador do rota, e ativado o listener que ira monitorar o motorista para saber quando ele chegou no rota
+        11 - Quando o motorista chegar ao rota, a requisicao recebera o status de FINALIZADA.
+        12 - Consequentemente, o listener do firebase ira identificar que a requisiçao foi finalizada, e ira: desabilitar o botao de rota, remover marcadores do motorista e do usuario, centralizar a camera no marcador de rota, ira remover as referencias no firebase de requisicao aberta do motorista e do usuario, e ira tambem mudar o texto do botao para "corrida finalizada + valor"
 
 
 
@@ -138,7 +138,7 @@ public class CorridaActivity extends AppCompatActivity
             mMarkerPassageiro.remove();
         }
 
-        //Recupera as coordenadas referente a onde o passageiro ira embarcar
+        //Recupera as coordenadas referente a onde o usuario ira embarcar
         double latitudePassageiro = mRequisicao.getLatitude();
         double longitudePassageiro = mRequisicao.getLongitude();
         LatLng location = new LatLng(latitudePassageiro, longitudePassageiro);
@@ -147,10 +147,10 @@ public class CorridaActivity extends AppCompatActivity
         mMarkerPassageiro = mMap.addMarker(new MarkerOptions()
                 .position(location)
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.usuario))
-                .title("O passageiro esta aqui"));
+                .title("O usuario esta aqui"));
 
 
-        //Insere um circulo ao redor do marcador do passageiro, para representar a area de 50m ao redor dele
+        //Insere um circulo ao redor do marcador do usuario, para representar a area de 50m ao redor dele
         mCirclePassageiro = mMap.addCircle(
                 new CircleOptions()
                         .center(location)
@@ -165,7 +165,7 @@ public class CorridaActivity extends AppCompatActivity
 
     }
 
-    //Os parametros da assinatura deste metodo possuem nomes genericos porque nem sempre serao chamados os mesmos marcadores (hora sera marcador motorista e passageiro, hora sera motorista e destino)
+    //Os parametros da assinatura deste metodo possuem nomes genericos porque nem sempre serao chamados os mesmos marcadores (hora sera marcador motorista e usuario, hora sera motorista e rota)
 
     private void centralizarMarcadores(Marker marker1, Marker marker2) {
 
@@ -222,8 +222,8 @@ public class CorridaActivity extends AppCompatActivity
                             mButtonAceitar.setText(R.string.map_a_caminho_do_passageiro);
                             /**
                              * Inicia o listener do geofire que ira verifica a posicao do motorista em relacao
-                             * ao passageiro, e entao executar açoes especificas quando o motorista chegar em
-                             * um raio de 50m do passageiro
+                             * ao usuario, e entao executar açoes especificas quando o motorista chegar em
+                             * um raio de 50m do usuario
                              */
                             layoutAtivarBotaoRotas(true);
                             firebaseAtivarListenerLocalizacaoGeoFirePassageiro();
@@ -240,7 +240,7 @@ public class CorridaActivity extends AppCompatActivity
                             //Finaliza a corrida retirando as referencias de usuario e motorista vinculadas
                             requisicao.finalizar();
 
-                            //Remove os marcadores do passageiro e do motorista
+                            //Remove os marcadores do usuario e do motorista
                             if(mMarkerPassageiro != null){
                                 mMarkerPassageiro.remove();
                             }
@@ -248,10 +248,10 @@ public class CorridaActivity extends AppCompatActivity
                                 mMarkerMotorista.remove();
                             }
 
-                            //Remove o circulo do marcador do passageiro
+                            //Remove o circulo do marcador do usuario
                             mCirclePassageiro.remove();
 
-                            //Centralizar camera do mapa no marcador do destino
+                            //Centralizar camera do mapa no marcador do rota
                             if(mMarkerDestino != null) mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(mMarkerDestino.getPosition(), 15));
 
                             //Calcula o valor da corrida
@@ -313,7 +313,7 @@ public class CorridaActivity extends AppCompatActivity
     private void firebaseAtivarListenerLocalizacaoGeoFirePassageiro() {
 
         /**
-         * Coordenadas do passageiro, estas coordenas serao as que o GeoQuery ira utilizar para comparar com a
+         * Coordenadas do usuario, estas coordenas serao as que o GeoQuery ira utilizar para comparar com a
          Localizaçao do motorista
          **/
         double latitude = mRequisicao.getLatitude();
@@ -329,8 +329,8 @@ public class CorridaActivity extends AppCompatActivity
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 if(key.equals(UserProfile.getMotoristaLogado().getId())){
-                    //Avisa o motorista para que procure o passageiro
-                    Toast.makeText(CorridaActivity.this, "Procure o passageiro", Toast.LENGTH_LONG).show();
+                    //Avisa o motorista para que procure o usuario
+                    Toast.makeText(CorridaActivity.this, "Procure o usuario", Toast.LENGTH_LONG).show();
 
                     //Remove o listener do geoquery
                     geoQuery.removeAllListeners();
@@ -339,10 +339,10 @@ public class CorridaActivity extends AppCompatActivity
                     mRequisicao.setStatus(Requisicao.STATUS_TRAVELING);
                     mRequisicao.atualizarStatus();
 
-                    //Insere o marcador do destino
+                    //Insere o marcador do rota
                     adicionarMarcadorDestino();
 
-                    //Ativa o listener que ira monitorar a viagem a partir de agora em direçao ao destino
+                    //Ativa o listener que ira monitorar a viagem a partir de agora em direçao ao rota
                     firebaseAtivarListenerLocalizacaoGeoFireDestino();
                 }
             }
@@ -375,10 +375,10 @@ public class CorridaActivity extends AppCompatActivity
 
     private void firebaseAtivarListenerLocalizacaoGeoFireDestino() {
 
-        Log.d(TAG, "Passo 11: Listener de monitoramento em direçao ao destino foi ativado");
+        Log.d(TAG, "Passo 11: Listener de monitoramento em direçao ao rota foi ativado");
 
         /**
-         * Coordenadas do destino, estas coordenas serao as que o GeoQuery ira utilizar para comparar com a
+         * Coordenadas do rota, estas coordenas serao as que o GeoQuery ira utilizar para comparar com a
          Localizaçao do motorista
          **/
         Destino destino = mRequisicao.getDestination();
@@ -395,8 +395,8 @@ public class CorridaActivity extends AppCompatActivity
             @Override
             public void onKeyEntered(String key, GeoLocation location) {
                 if(key.equals(UserProfile.getMotoristaLogado().getId())){
-                    //Avisa o motorista para que procure o passageiro
-                    Toast.makeText(CorridaActivity.this, "Voce chegou ao destino do passageiro", Toast.LENGTH_LONG).show();
+                    //Avisa o motorista para que procure o usuario
+                    Toast.makeText(CorridaActivity.this, "Voce chegou ao rota do usuario", Toast.LENGTH_LONG).show();
 
                     //Remove o listener do geoquery
                     geoQuery.removeAllListeners();
@@ -449,14 +449,14 @@ public class CorridaActivity extends AppCompatActivity
 
         mMarkerDestino = mMap.addMarker(new MarkerOptions()
                 .position(latLng)
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.destino))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.rota))
                 .title(getString(R.string.map_marker_destination)));
 
-        Log.d(TAG, "Passo 10: Marcador do destino foi inserido");
+        Log.d(TAG, "Passo 10: Marcador do rota foi inserido");
 
         centralizarMarcadores(mMarkerMotorista, mMarkerDestino);
 
-        //Insere um circulo ao redor do marcador do destino, para representar a area de 50m ao redor dele
+        //Insere um circulo ao redor do marcador do rota, para representar a area de 50m ao redor dele
         Circle circle = mMap.addCircle(
                 new CircleOptions()
                         .center(latLng)
@@ -481,7 +481,7 @@ public class CorridaActivity extends AppCompatActivity
         //Recupera os dados do motorista
         Motorista motorista = UserProfile.getMotoristaLogado();
 
-        //Atualiza a requisicao do passageiro
+        //Atualiza a requisicao do usuario
         mRequisicao.setDriver(motorista);
         mRequisicao.setStatus(Requisicao.STATUS_ON_THE_WAY);
         mRequisicao.atualizar();

@@ -126,7 +126,7 @@ public class HomePassageiroActivity extends AppCompatActivity
 
 
         mMarkerPassageiro = mMap.addMarker(new MarkerOptions()
-            .title("O passageiro esta aqui")
+            .title("O usuario esta aqui")
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.usuario))
             .position(latLng));
 
@@ -154,7 +154,7 @@ public class HomePassageiroActivity extends AppCompatActivity
 
         LatLngBounds bounds = builder.build();
 
-        //Verifica se os marcadores do motorista e do passageiro sao nulos, pois caso sejam, quer dizer que a tela ainda nao foi totalmente carregada, e entao a camera ira focalizar apenas um marcador.
+        //Verifica se os marcadores do motorista e do usuario sao nulos, pois caso sejam, quer dizer que a tela ainda nao foi totalmente carregada, e entao a camera ira focalizar apenas um marcador.
         if(mMarkerDriver != null && mMarkerPassageiro != null){
             //Get the width and height of the device's screen
             int width = getResources().getDisplayMetrics().widthPixels;
@@ -291,7 +291,7 @@ public class HomePassageiroActivity extends AppCompatActivity
                     stringDestino.append("\nCEP: " + destino.getCep());
 
                     AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                    builder.setTitle("Confirme seu  destino");
+                    builder.setTitle("Confirme seu  rota");
                     builder.setMessage("Confirme se o endereco abaixo e o desejado");
                     builder.setMessage(stringDestino);
                     builder.setPositiveButton("Confirmar", new DialogInterface.OnClickListener() {
@@ -316,7 +316,7 @@ public class HomePassageiroActivity extends AppCompatActivity
                     dialog.show();
 
                 } else {
-                    Toast.makeText(this, "Houve um problema ao recuperar o endereco de destino", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Houve um problema ao recuperar o endereco de rota", Toast.LENGTH_SHORT).show();
                 }
 
 
@@ -393,7 +393,7 @@ public class HomePassageiroActivity extends AppCompatActivity
                 // Add a marker in the current position of the user
                 mLatLng = new LatLng(latitude, longitude);
 
-                //Adicionar o marcador do passageiro
+                //Adicionar o marcador do usuario
                 addMarcadorPassageiro(mLatLng);
 
                 //Esconde a progress bar caso esteja ativa
@@ -454,7 +454,7 @@ public class HomePassageiroActivity extends AppCompatActivity
                         Destino destino = mRequisicao.getDestination();
                         LatLng latLng = new LatLng(Double.parseDouble(destino.getLatitude()), Double.parseDouble(destino.getLongitute()));
                         addMarcadorDestino(latLng);
-                        mTextViewAvisoMotoristaACaminho.setText("A caminho do destino");
+                        mTextViewAvisoMotoristaACaminho.setText("A caminho do rota");
                         break;
 
                     case Requisicao.STATUS_COMPLETED :
@@ -484,8 +484,8 @@ public class HomePassageiroActivity extends AppCompatActivity
 
 
         mMarkerDestino = mMap.addMarker(new MarkerOptions()
-            .title("O seu destino esta aqui")
-            .icon(BitmapDescriptorFactory.fromResource(R.drawable.destino))
+            .title("O seu rota esta aqui")
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.rota))
             .position(latLng));
 
         centralizarMarcadores();

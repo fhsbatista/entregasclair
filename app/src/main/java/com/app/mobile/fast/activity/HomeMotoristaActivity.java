@@ -168,18 +168,18 @@ public class HomeMotoristaActivity extends AppCompatActivity {
             public void onLocationChanged(Location location) {
 
                 String latitude = String.valueOf(location.getLatitude());
-                String longitude = String.valueOf(location.getLongitude());
+                    String longitude = String.valueOf(location.getLongitude());
 
                 mMotorista.setLatitude(latitude);
                 mMotorista.setLongitude(longitude);
 
                 if(mListRequests.size() > 0){
                     for(Requisicao requisicao : mListRequests){
-                        Location locationRequisicao = new Location("Localizacao passageiro");
+                        Location locationRequisicao = new Location("Localizacao usuario");
                         locationRequisicao.setLatitude(requisicao.getLatitude());
                         locationRequisicao.setLongitude(requisicao.getLongitude());
 
-                        //Este metodo calcula a distancia entre a distancia atual do motorista e a localizacao do passageiro
+                        //Este metodo calcula a distancia entre a distancia atual do motorista e a localizacao do usuario
                         double distanciaMotoristaPassageiro = LocalizaoHelper.calcularDistancia(location, locationRequisicao);
                         requisicao.setDistance(distanciaMotoristaPassageiro);
 
