@@ -62,7 +62,7 @@
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:background="@color/btnLogin"
+        android:background="@color/btnCadastrar"
         android:onClick="logarUsuario"
         android:text="Entrar"
         android:textColor="@android:color/white"

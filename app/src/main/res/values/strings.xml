@@ -1,20 +1,21 @@
 <resources>
-    <string name="app_name">Fast</string>
+    <string name="app_name">Entregas Clair</string>
     <string name="title_activity_maps">Map</string>
     <string name="titulo_cadastro">Novo Cadastro</string>
     <string name="titulo_login">Login</string>
-    <string name="title_activity_home_passageiro">Iniciar uma viagem</string>
+    <string name="title_activity_home_passageiro">Requisitar uma entrega</string>
     <string name="title_activity_home_motorista">Requisiçoes</string>
-    <string name="activity_home_motorista_there_is_no_requests">Nao existem passageiros aguardando</string>
-    <string name="activity_home_passageiro_cancel_ride">Cancelar Carro</string>
-    <string name="activity_home_passageiro_request_car">Chamar Carro</string>
-    <string name="title_activity_corrida">Visualizar corrida</string>
-    <string name="activity_corrida_accept_ride">Aceitar Corrida</string>
-    <string name="activity_corrida_on_the_way">A caminho do passageiro</string>
+    <string name="activity_home_motorista_there_is_no_requests">Nao existem restaurantes aguardando</string>
+    <string name="activity_home_passageiro_cancel_ride">Cancelar Enterga</string>
+    <string name="activity_home_passageiro_request_car">Chamar Moto</string>
+    <string name="title_activity_corrida">Visualizar Requisicao</string>
+    <string name="activity_corrida_accept_ride">Aceitar Entrega</string>
+    <string name="activity_corrida_on_the_way">A caminho do restaurante</string>
     <string name="map_marker_where_the_user_is">Voce esta aqui</string>
-    <string name="map_marker_where_the_passenger_is">O passageiro esta aqui</string>
-    <string name="map_destino_passageir">Destino do passageiro</string>
-    <string name="map_a_caminho_do_passageiro">A caminho do passageiro</string>
+    <string name="map_marker_where_the_passenger_is">O restaurante esta aqui</string>
+    <string name="map_destino_passageir">Destino da entrega</string>
+    <string name="map_a_caminho_do_passageiro">A caminho do restaurante</string>
     <string name="map_a_caminho_do_destino">A caminho do destino</string>
-    <string name="map_marker_destination">Destino do passageiro</string>
+    <string name="map_marker_destination">Destino da entrega</string>
+    <string name="title_activity_maps2">Map</string>
 </resources>

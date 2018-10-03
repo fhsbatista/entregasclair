@@ -10,32 +10,34 @@
     tools:context=".activity.MainActivity">
 
 
-    <TextView
+    <ImageView
+        android:id="@+id/imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="FAST"
-        android:textColor="@android:color/white"
-        android:textSize="80sp"
-        android:textStyle="italic|bold"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/logo_clair" />
 
     <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="0dp"
-        android:layout_height="46dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
         android:layout_marginStart="16dp"
-        android:background="@android:color/white"
         android:gravity="bottom"
+        android:orientation="vertical"
         android:padding="8dp"
-        android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -43,29 +45,36 @@
 
         <Button
             android:id="@+id/bt_entrar"
-            android:layout_width="176dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="6dp"
             android:layout_weight="1"
-            android:text="Entrar"
-            android:layout_marginRight="4dp"
             android:background="@color/btnLogin"
+            android:onClick="abrirLogin"
+            android:text="Entrar"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:textColor="@color/colorPrimaryDark"
             tools:layout_editor_absoluteX="16dp"
-            tools:layout_editor_absoluteY="392dp"
-            android:textColor="@android:color/white"
-            android:onClick="abrirLogin"/>
+            tools:layout_editor_absoluteY="392dp" />
 
         <Button
             android:id="@+id/bt_cadastrar"
-            android:layout_width="160dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
             android:layout_weight="1"
-            android:layout_marginRight="4dp"
-            android:text="Cadastrar"
             android:background="@color/btnCadastrar"
+            android:onClick="abrirCadastro"
+            android:text="Cadastrar"
+            android:textSize="16sp"
+            android:textStyle="bold"
             android:textColor="@android:color/white"
             tools:layout_editor_absoluteX="208dp"
-            tools:layout_editor_absoluteY="392dp"
-            android:onClick="abrirCadastro"/>
+            tools:layout_editor_absoluteY="392dp" />
 
 
     </LinearLayout>
