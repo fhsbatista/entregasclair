@@ -4,6 +4,7 @@ import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Address;
 import android.location.Geocoder;
 import android.location.Location;
@@ -11,6 +12,8 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -88,16 +91,63 @@ public class HomePassageiroActivity extends AppCompatActivity
         //Este metodo ira inicializar os elementos do layout
         inicializarElementosUI();
 
-        //Mostra a barra de progressdialog
-        mostrarProgressBar();
+        //Verifica se a localizaçao do usuario esta ativa
+        if(verificarSensorLocalizaçao()){
+            //Mostra a barra de progressdialog
+            mostrarProgressBar();
 
 
-        //Este metodo configura o mapa e seu callback
-        configurarMapa();
+            //Este metodo configura o mapa e seu callback
+            configurarMapa();
 
 
-        //Verifica se ja exista uma requisicao aberta para o usuario que solicitou
-        verificaRequisicaoPendente();
+            //Verifica se ja exista uma requisicao aberta para o usuario que solicitou
+            verificaRequisicaoPendente();
+        } else{
+
+            ativarLocationSnackBar();
+        }
+
+
+
+
+
+
+    }
+
+    private void ativarLocationSnackBar() {
+
+        CoordinatorLayout coordinatorLayout = findViewById(R.id.coordinatorLayout);
+
+        final Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, "Voce precisa ativar sua localizaçao", Snackbar.LENGTH_INDEFINITE)
+                .setAction("Tentar novamente", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+                        if(!verificarSensorLocalizaçao())
+                            ativarLocationSnackBar();
+
+                    }
+                });
+
+        snackbar.setActionTextColor(Color.CYAN);
+
+        snackbar.show();
+
+
+    }
+
+
+    private boolean verificarSensorLocalizaçao() {
+
+        LocationManager locationManager = (LocationManager) this.getSystemService(LOCATION_SERVICE);
+
+
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+                || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+
+
 
 
 
