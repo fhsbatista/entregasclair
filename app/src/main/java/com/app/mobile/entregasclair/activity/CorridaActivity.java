@@ -227,10 +227,16 @@ public class CorridaActivity extends AppCompatActivity
                              */
                             layoutAtivarBotaoRotas(true);
                             firebaseAtivarListenerLocalizacaoGeoFirePassageiro();
+
+                            //Bloqueia o button up por que o usuario nao pode fechar a tela enquanto nao terminar a corrida
+                            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                             break;
 
                         case Requisicao.STATUS_TRAVELING:
                             mButtonAceitar.setText(R.string.map_a_caminho_do_destino);
+
+                            //Bloqueia o button up por que o usuario nao pode fechar a tela enquanto nao terminar a corrida
+                            getSupportActionBar().setDisplayHomeAsUpEnabled(false);
                             break;
 
                         case Requisicao.STATUS_COMPLETED:
