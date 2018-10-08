@@ -13,9 +13,11 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -267,7 +269,15 @@ public class CorridaActivity extends AppCompatActivity
                             DecimalFormat df = new DecimalFormat("0.00");
                             String valorCorrida = df.format(calculaValorDaCorrida());
                             mButtonAceitar.setText("Corrida Finalizada Valor: " + valorCorrida);
+
+                            //Libera o button up para que o usuario para voltar para a tela principal
+                            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
                             break;
+
+                        case Requisicao.STATUS_CANCELED :
+                            //Libera o button up para que o usuario para voltar para a tela principal
+                            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
                         default:
                             break;
@@ -619,6 +629,18 @@ public class CorridaActivity extends AppCompatActivity
         Log.d(TAG, "Passo 1 : metodo onMapReady chamado.");
         adicionarMarcadorPassageiro();
     }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // Respond to the action bar's Up/Home button
+            case android.R.id.home:
+                NavUtils.navigateUpFromSameTask(this);
+                return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 }
 
 
