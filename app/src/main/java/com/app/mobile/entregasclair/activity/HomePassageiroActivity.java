@@ -1,6 +1,7 @@
 package com.app.mobile.entregasclair.activity;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -103,17 +104,18 @@ public class HomePassageiroActivity extends AppCompatActivity
 
             //Verifica se ja exista uma requisicao aberta para o usuario que solicitou
             verificaRequisicaoPendente();
-        } else{
 
+
+        } else{
             ativarLocationSnackBar();
         }
-
-
-
-
-
-
     }
+
+
+
+
+
+
 
     private void ativarLocationSnackBar() {
 
@@ -127,6 +129,8 @@ public class HomePassageiroActivity extends AppCompatActivity
 
                         if(!verificarSensorLocalizaçao())
                             ativarLocationSnackBar();
+                        else
+                            HomePassageiroActivity.this.recreate();
 
                     }
                 });
@@ -134,8 +138,6 @@ public class HomePassageiroActivity extends AppCompatActivity
         snackbar.setActionTextColor(Color.CYAN);
 
         snackbar.show();
-
-
     }
 
 
@@ -146,12 +148,6 @@ public class HomePassageiroActivity extends AppCompatActivity
 
         return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
                 || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-
-
-
-
-
-
     }
 
     private void mostrarProgressBar(){
@@ -159,7 +155,6 @@ public class HomePassageiroActivity extends AppCompatActivity
         mLayoutEnderecos.setVisibility(View.GONE);
         mChamarCarro.setVisibility(View.GONE);
         mProgressBarLoading.setVisibility(View.VISIBLE);
-
     }
 
     private void esconderProgressBar(){
@@ -167,7 +162,6 @@ public class HomePassageiroActivity extends AppCompatActivity
         mLayoutEnderecos.setVisibility(View.VISIBLE);
         mChamarCarro.setVisibility(View.VISIBLE);
         mProgressBarLoading.setVisibility(View.GONE);
-
     }
 
     private void addMarcadorPassageiro(LatLng latLng){
@@ -295,15 +289,6 @@ public class HomePassageiroActivity extends AppCompatActivity
         });
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
@@ -439,18 +424,8 @@ public class HomePassageiroActivity extends AppCompatActivity
 
                 UserProfile.atualizaGeoFireLocalizacaoUsuario(location.getLatitude(), location.getLongitude() );
 
-                double latitude = location.getLatitude();
-                double longitude = location.getLongitude();
 
-                // Add a marker in the current position of the user
-                mLatLng = new LatLng(latitude, longitude);
-
-                //Adicionar o marcador do usuario
-                addMarcadorPassageiro(mLatLng);
-
-                //Esconde a progress bar caso esteja ativa
-                if(mProgressBarLoading.getVisibility() == View.VISIBLE)
-                    esconderProgressBar();
+                atualizarMapa(location);
 
 
             }
@@ -478,10 +453,39 @@ public class HomePassageiroActivity extends AppCompatActivity
                     200,
                     10,
                     mLocationListener);
+
+
+            Location lastLocalizacaoConhecida = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            if (lastLocalizacaoConhecida != null) {
+                atualizarMapa(lastLocalizacaoConhecida);
+            } else{
+                lastLocalizacaoConhecida = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (lastLocalizacaoConhecida != null) {
+                    atualizarMapa(lastLocalizacaoConhecida);
+                }
+            }
+
+
         } else {
             Toast.makeText(this, "Voce tem problemas com permissoes", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private void atualizarMapa(Location location) {
+        double latitude = location.getLatitude();
+        double longitude = location.getLongitude();
+
+        // Add a marker in the current position of the user
+        mLatLng = new LatLng(latitude, longitude);
+
+        //Adicionar o marcador do usuario
+        addMarcadorPassageiro(mLatLng);
+
+        //Esconde a progress bar caso esteja ativa
+        if(mProgressBarLoading.getVisibility() == View.VISIBLE)
+            esconderProgressBar();
     }
 
     private void ativarListenerRequisicao(){
