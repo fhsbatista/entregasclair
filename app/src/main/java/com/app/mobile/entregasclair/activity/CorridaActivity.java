@@ -577,15 +577,33 @@ public class CorridaActivity extends AppCompatActivity
 
         //Request location updates
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            mLocationManager.requestLocationUpdates(
-                    LocationManager.GPS_PROVIDER,
-                    1000,
-                    10,
-                    mLocationListener);
+
+            mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000,
+                    10, mLocationListener);
+
+            Location lastKnownLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+
+            if (lastKnownLocation != null) {
+                atualizarMapa(lastKnownLocation);
+                Log.d(TAG, "Recuperada a ultima localizacao a partir do provider NETWORK");
+            } else{
+
+                lastKnownLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+                if (lastKnownLocation != null) {
+                    atualizarMapa(lastKnownLocation);
+                    Log.d(TAG, "Recuperada a ultima localizacao a partir do provider GPS");
+                }
+
+            }
+
         } else {
             Toast.makeText(this, "Voce tem problemas com permissoes", Toast.LENGTH_SHORT).show();
         }
 
+    }
+
+    private void atualizarMapa(Location lastKnownLocation) {
+        adicionarMarcadorMotorista(lastKnownLocation);
     }
 
 
