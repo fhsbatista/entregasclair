@@ -276,8 +276,17 @@ public class CorridaActivity extends AppCompatActivity
                             break;
 
                         case Requisicao.STATUS_CANCELED :
+
+                            //Emite mensagem avisando o motorista
+                            Toast.makeText(CorridaActivity.this, "O usuario cancelou a entrega", Toast.LENGTH_SHORT).show();
+
+                            //Finaliza a activity
+                            finish();
+
                             //Libera o button up para que o usuario para voltar para a tela principal
                             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+
+                            break;
 
                         default:
                             break;
