@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -31,6 +32,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.app.mobile.entregasclair.R;
+import com.app.mobile.entregasclair.adapter.PlaceAutoCompleteAdapter;
 import com.app.mobile.entregasclair.config.ConfigFirebase;
 import com.app.mobile.entregasclair.helper.UserProfile;
 import com.app.mobile.entregasclair.model.Destino;
@@ -39,6 +41,8 @@ import com.app.mobile.entregasclair.model.Requisicao;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
 import com.firebase.geofire.LocationCallback;
+import com.google.android.gms.location.places.GeoDataClient;
+import com.google.android.gms.location.places.Places;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -61,26 +65,26 @@ public class HomePassageiroActivity extends AppCompatActivity
         implements OnMapReadyCallback {
 
     private static final String TAG = HomePassageiroActivity.class.getSimpleName();
-    private EditText mLocalDestino;
+
+    //widgets
+    private AutoCompleteTextView mLocalDestino;
     private Button mChamarCarro;
     private LinearLayout mLayoutEnderecos;
     private TextView mTextViewAvisoMotoristaACaminho;
+    private ProgressBar mProgressBarLoading;
 
 
+    //Variaveis
+    private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
     private GoogleMap mMap;
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
     private LatLng mLatLng;
     private boolean isRideRequested = false;
     private Requisicao mRequisicao;
-
-    //Marcadores
     private Marker mMarkerPassageiro;
     private Marker mMarkerDriver;
     private Marker mMarkerDestino;
-
-    //UI
-    private ProgressBar mProgressBarLoading;
 
 
     @Override
@@ -91,6 +95,7 @@ public class HomePassageiroActivity extends AppCompatActivity
 
         //Este metodo ira inicializar os elementos do layout
         inicializarElementosUI();
+
 
         //Verifica se a localizaçao do usuario esta ativa
         if(verificarSensorLocalizaçao()){
@@ -110,12 +115,6 @@ public class HomePassageiroActivity extends AppCompatActivity
             ativarLocationSnackBar();
         }
     }
-
-
-
-
-
-
 
     private void ativarLocationSnackBar() {
 
@@ -139,7 +138,6 @@ public class HomePassageiroActivity extends AppCompatActivity
 
         snackbar.show();
     }
-
 
     private boolean verificarSensorLocalizaçao() {
 
@@ -466,10 +464,42 @@ public class HomePassageiroActivity extends AppCompatActivity
                 }
             }
 
+            configurarAdapterSugestoesDestino(lastLocalizacaoConhecida);
+
 
         } else {
             Toast.makeText(this, "Voce tem problemas com permissoes", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    private void configurarAdapterSugestoesDestino(Location lastLocalizacaoConhecida) {
+
+        //Inicia adapter GOOGLE PLACES (usado para sugestoes de endereço do destino)
+        GeoDataClient geoDataClient = Places.getGeoDataClient(this);
+
+        //Coordenadas para criar um quadrado em torno da localizaçao do usuario, neste quase sera um quadro
+        //em que as bordas terao 0.02 graus de distancia da localizaçao do usuario, o que da em media 4,5km
+        Double lat1 = lastLocalizacaoConhecida.getLatitude() + 0.02;
+        Double lon1 = lastLocalizacaoConhecida.getLongitude() + 0.02;
+        Double lat2 = lastLocalizacaoConhecida.getLatitude() - 0.02;
+        Double lon2 = lastLocalizacaoConhecida.getLongitude() - 0.02;
+
+        //LatLng que serao usadas para criar o quadrado
+        LatLng latLng1 = new LatLng(lat1, lon1);
+        LatLng latLng2 = new LatLng(lat2, lon2);
+
+        //LatLngBounds final para ser usado no adapter
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(latLng1);
+        builder.include(latLng2);
+        LatLngBounds latLngBounds = builder.build();
+
+        mPlaceAutoCompleteAdapter = new PlaceAutoCompleteAdapter
+                (this, geoDataClient, latLngBounds, null);
+
+        mLocalDestino.setAdapter(mPlaceAutoCompleteAdapter);
+
 
     }
 

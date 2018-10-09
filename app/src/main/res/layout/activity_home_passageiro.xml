@@ -50,7 +50,7 @@
             android:textColorHint="@android:color/darker_gray"
             android:textSize="18sp" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/et_local_destino"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
