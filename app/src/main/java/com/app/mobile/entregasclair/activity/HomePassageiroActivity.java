@@ -1,7 +1,6 @@
 package com.app.mobile.entregasclair.activity;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -13,6 +12,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
@@ -25,7 +25,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -68,14 +67,16 @@ public class HomePassageiroActivity extends AppCompatActivity
 
     //widgets
     private AutoCompleteTextView mLocalDestino;
+    private AutoCompleteTextView mLocalPartida;
     private Button mChamarCarro;
-    private LinearLayout mLayoutEnderecos;
+    private ConstraintLayout mLayoutEnderecos;
     private TextView mTextViewAvisoMotoristaACaminho;
     private ProgressBar mProgressBarLoading;
 
 
     //Variaveis
-    private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapter;
+    private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapterDestino;
+    private PlaceAutoCompleteAdapter mPlaceAutoCompleteAdapterPartida;
     private GoogleMap mMap;
     private LocationManager mLocationManager;
     private LocationListener mLocationListener;
@@ -234,10 +235,10 @@ public class HomePassageiroActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         mLayoutEnderecos = findViewById(R.id.layout_enderecos);
         mLocalDestino = findViewById(R.id.et_local_destino);
+        mLocalPartida = findViewById(R.id.et_local_partida);
         mChamarCarro = findViewById(R.id.bt_chamar_uber);
         mTextViewAvisoMotoristaACaminho = findViewById(R.id.tv_motorista_a_caminho);
         mProgressBarLoading = findViewById(R.id.pb_loading);
-
     }
 
     private void verificaRequisicaoPendente() {
@@ -387,8 +388,21 @@ public class HomePassageiroActivity extends AppCompatActivity
         requisicao.setPassenger(passageiro);
 
         //Set the coordinates
-        requisicao.setLatitude(mLatLng.latitude);
-        requisicao.setLongitude(mLatLng.longitude);
+        String enderecoPartida = mLocalPartida.getText().toString();
+
+        if(enderecoPartida.equals("")) {
+            requisicao.setLatitude(mLatLng.latitude);
+            requisicao.setLongitude(mLatLng.longitude);
+        } else{
+            //Recupera os dados do endereço digitado
+            Address address = recuperaEndereco(enderecoPartida);
+            requisicao.setLatitude(address.getLatitude());
+            requisicao.setLongitude(address.getLongitude());
+
+            //Adiciona o marcador do local de partida
+            LatLng latLng = new LatLng(address.getLatitude(), address.getLongitude());
+            addMarcadorPassageiro(latLng);
+        }
 
         return requisicao;
 
@@ -465,6 +479,7 @@ public class HomePassageiroActivity extends AppCompatActivity
             }
 
             configurarAdapterSugestoesDestino(lastLocalizacaoConhecida);
+            configurarAdapterSugestoesPartida(lastLocalizacaoConhecida);
 
 
         } else {
@@ -495,10 +510,40 @@ public class HomePassageiroActivity extends AppCompatActivity
         builder.include(latLng2);
         LatLngBounds latLngBounds = builder.build();
 
-        mPlaceAutoCompleteAdapter = new PlaceAutoCompleteAdapter
+        mPlaceAutoCompleteAdapterDestino = new PlaceAutoCompleteAdapter
                 (this, geoDataClient, latLngBounds, null);
 
-        mLocalDestino.setAdapter(mPlaceAutoCompleteAdapter);
+        mLocalDestino.setAdapter(mPlaceAutoCompleteAdapterDestino);
+
+
+    }
+
+    private void configurarAdapterSugestoesPartida(Location lastLocalizacaoConhecida) {
+
+        //Inicia adapter GOOGLE PLACES (usado para sugestoes de endereço do destino)
+        GeoDataClient geoDataClient = Places.getGeoDataClient(this);
+
+        //Coordenadas para criar um quadrado em torno da localizaçao do usuario, neste quase sera um quadro
+        //em que as bordas terao 0.02 graus de distancia da localizaçao do usuario, o que da em media 4,5km
+        Double lat1 = lastLocalizacaoConhecida.getLatitude() + 0.02;
+        Double lon1 = lastLocalizacaoConhecida.getLongitude() + 0.02;
+        Double lat2 = lastLocalizacaoConhecida.getLatitude() - 0.02;
+        Double lon2 = lastLocalizacaoConhecida.getLongitude() - 0.02;
+
+        //LatLng que serao usadas para criar o quadrado
+        LatLng latLng1 = new LatLng(lat1, lon1);
+        LatLng latLng2 = new LatLng(lat2, lon2);
+
+        //LatLngBounds final para ser usado no adapter
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        builder.include(latLng1);
+        builder.include(latLng2);
+        LatLngBounds latLngBounds = builder.build();
+
+        mPlaceAutoCompleteAdapterPartida = new PlaceAutoCompleteAdapter
+                (this, geoDataClient, latLngBounds, null);
+
+        mLocalPartida.setAdapter(mPlaceAutoCompleteAdapterPartida);
 
 
     }
