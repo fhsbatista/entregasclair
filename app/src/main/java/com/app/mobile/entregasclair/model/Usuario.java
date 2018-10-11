@@ -26,6 +26,13 @@ public class Usuario implements Serializable{
         this.email = email;
     }
 
+    public Usuario(String id, String nome, String email, String tipo) {
+        this.id = id;
+        this.nome = nome;
+        this.email = email;
+        this.tipo = tipo;
+    }
+
     public void salvarNoFirebase(){
 
         //Recuperando o id do usuario

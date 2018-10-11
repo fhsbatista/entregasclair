@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import com.app.mobile.entregasclair.R;
 import com.app.mobile.entregasclair.config.ConfigFirebase;
+import com.app.mobile.entregasclair.config.SharedPrefUsuario;
 import com.app.mobile.entregasclair.helper.UserProfile;
 import com.app.mobile.entregasclair.model.Passageiro;
 import com.app.mobile.entregasclair.model.Usuario;
@@ -43,21 +44,22 @@ public class CadastroActivity extends AppCompatActivity {
 
         //Primeiro serao validados os campos digitados, caso eles tenham sido digitados corretamente, o cadastro sera iniciado
         if(validarCamposDigitados()){
-            final Passageiro passageiro = new Passageiro();
-            passageiro.setNome(mNome.getText().toString());
-            passageiro.setEmail(mEmail.getText().toString());
-            passageiro.setSenha(mSenha.getText().toString());
-            passageiro.setTipo(verificarTipoUsuario());
+            final Usuario usuario = new Usuario();
+            usuario.setNome(mNome.getText().toString());
+            usuario.setEmail(mEmail.getText().toString());
+            usuario.setSenha(mSenha.getText().toString());
+            usuario.setTipo(verificarTipoUsuario());
 
             mAuth = ConfigFirebase.getFirebaseAuth();
-            mAuth.createUserWithEmailAndPassword(passageiro.getEmail(), passageiro.getSenha())
+            mAuth.createUserWithEmailAndPassword(usuario.getEmail(), usuario.getSenha())
                     .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
                 @Override
                 public void onComplete(@NonNull Task<AuthResult> task) {
                     if(task.isSuccessful()){
-                        passageiro.salvarNoFirebase();
-                        UserProfile.atualizarNomeUsuario(passageiro.getNome());
-                        if(passageiro.getTipo().equals("Driver"))
+                        usuario.salvarNoFirebase();
+                        UserProfile.atualizarNomeUsuario(usuario.getNome());
+                        SharedPrefUsuario.salvarDadosUsuarioLogado(usuario, CadastroActivity.this);
+                        if(usuario.getTipo().equals("Driver"))
                             startActivity(new Intent(CadastroActivity.this, HomeMotoristaActivity.class));
                         else
                             startActivity(new Intent(CadastroActivity.this, HomePassageiroActivity.class));
