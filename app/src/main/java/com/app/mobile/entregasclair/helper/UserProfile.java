@@ -99,8 +99,7 @@ public class UserProfile {
                             if (passageiro.getTipo().equals("Driver")){
 
                                 //Verify whether the driver already has some open ride
-                                DatabaseReference refRequest = ConfigFirebase.getDatabaseReference().child("requisicoes_abertas_motoristas")
-                                        .child(UserProfile.getMotoristaLogado().getId());
+                                DatabaseReference refRequest = ConfigFirebase.getDatabaseReference().child("requisicoes_abertas_motoristas").child(UserProfile.getMotoristaLogado().getId());
 
                                 refRequest.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override

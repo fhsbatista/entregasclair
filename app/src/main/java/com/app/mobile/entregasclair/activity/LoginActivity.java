@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.app.mobile.entregasclair.R;
 import com.app.mobile.entregasclair.config.ConfigFirebase;
+import com.app.mobile.entregasclair.config.SharedPrefUsuario;
 import com.app.mobile.entregasclair.helper.UserProfile;
 import com.app.mobile.entregasclair.model.Usuario;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -53,7 +54,23 @@ public class LoginActivity extends AppCompatActivity {
 
                             if (task.isSuccessful()) {
 
-                                UserProfile.redirecionarUsuario(LoginActivity.this);
+                                DatabaseReference refUsuario = ConfigFirebase.getDatabaseReference()
+                                        .child("usuarios").child(auth.getUid());
+
+                                refUsuario.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                                        Usuario usuario = dataSnapshot.getValue(Usuario.class);
+                                        SharedPrefUsuario.salvarDadosUsuarioLogado(usuario, LoginActivity.this);
+                                        UserProfile.redirecionarUsuario(LoginActivity.this);
+
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError databaseError) {
+
+                                    }
+                                });
 
 
 

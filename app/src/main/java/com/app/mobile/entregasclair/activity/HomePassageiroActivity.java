@@ -3,6 +3,7 @@ package com.app.mobile.entregasclair.activity;
 import android.Manifest;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Address;
@@ -716,6 +717,14 @@ public class HomePassageiroActivity extends AppCompatActivity
                 ConfigFirebase.getFirebaseAuth().signOut();
                 finish();
                 break;
+
+            case R.id.menu_dados:
+                startActivity(new Intent(HomePassageiroActivity.this, DadosUsuarioActivity.class));
+                break;
+
+            case android.R.id.home:
+                finish();
+                return true;
 
             default:
                 break;
