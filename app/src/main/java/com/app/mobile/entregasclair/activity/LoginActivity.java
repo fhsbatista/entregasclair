@@ -55,7 +55,7 @@ public class LoginActivity extends AppCompatActivity {
                             if (task.isSuccessful()) {
 
                                 DatabaseReference refUsuario = ConfigFirebase.getDatabaseReference()
-                                        .child("usuarios").child(auth.getUid());
+                                        .child("usuarios").child(ConfigFirebase.getFirebaseAuth().getUid());
 
                                 refUsuario.addListenerForSingleValueEvent(new ValueEventListener() {
                                     @Override

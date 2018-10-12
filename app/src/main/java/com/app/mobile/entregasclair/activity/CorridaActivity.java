@@ -346,7 +346,7 @@ public class CorridaActivity extends AppCompatActivity
 
         //Referencia da localizacao do motorista, esta referencia tera sempre a posicao do motorista em tempo real
         DatabaseReference refLocalizacoesUsuarios = ConfigFirebase.getDatabaseReference()
-                .child("localizacoes_usuarios");
+                .child("localizacoes_usuarios").child("Driver");
         GeoFire geoFire = new GeoFire(refLocalizacoesUsuarios);
         GeoLocation geoLocation = new GeoLocation(latitude, longitude);
         final GeoQuery geoQuery = geoFire.queryAtLocation(geoLocation, 0.05); //Radius em kilometros
@@ -412,7 +412,7 @@ public class CorridaActivity extends AppCompatActivity
 
         //Referencia da localizacao do motorista, esta referencia tera sempre a posicao do motorista em tempo real
         DatabaseReference refLocalizacoesUsuarios = ConfigFirebase.getDatabaseReference()
-                .child("localizacoes_usuarios");
+                .child("localizacoes_usuarios").child("Driver");
         GeoFire geoFire = new GeoFire(refLocalizacoesUsuarios);
         GeoLocation geoLocation = new GeoLocation(latitude, longitude);
         final GeoQuery geoQuery = geoFire.queryAtLocation(geoLocation, 0.05); //Radius em kilometros
@@ -579,7 +579,7 @@ public class CorridaActivity extends AppCompatActivity
             public void onLocationChanged(Location location) {
                 Log.d(TAG, "Passo 3: Localizacao recebida");
                 adicionarMarcadorMotorista(location);
-                UserProfile.atualizaGeoFireLocalizacaoUsuario(location.getLatitude(), location.getLongitude());
+                UserProfile.atualizaGeoFireLocalizacaoUsuario(CorridaActivity.this, location.getLatitude(), location.getLongitude());
 
 
             }

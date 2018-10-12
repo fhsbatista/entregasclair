@@ -40,6 +40,8 @@ import com.app.mobile.entregasclair.model.Passageiro;
 import com.app.mobile.entregasclair.model.Requisicao;
 import com.firebase.geofire.GeoFire;
 import com.firebase.geofire.GeoLocation;
+import com.firebase.geofire.GeoQuery;
+import com.firebase.geofire.GeoQueryEventListener;
 import com.firebase.geofire.LocationCallback;
 import com.google.android.gms.location.places.GeoDataClient;
 import com.google.android.gms.location.places.Places;
@@ -48,6 +50,8 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.Circle;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -58,8 +62,10 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.ValueEventListener;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 public class HomePassageiroActivity extends AppCompatActivity
         implements OnMapReadyCallback {
@@ -87,6 +93,13 @@ public class HomePassageiroActivity extends AppCompatActivity
     private Marker mMarkerPassageiro;
     private Marker mMarkerDriver;
     private Marker mMarkerDestino;
+    private Circle mCirclePassageiro;
+    private Map<String, Marker> mHashMapMarkers;
+
+    //Variaveis para encontrar motoristas proximos
+    private GeoFire mGeoFireMotoristasProximos;
+    private GeoLocation mGeoLocationMotoristasProximos;
+    private GeoQuery mGeoQueryMotoristasProximos;
 
 
     @Override
@@ -97,6 +110,9 @@ public class HomePassageiroActivity extends AppCompatActivity
 
         //Este metodo ira inicializar os elementos do layout
         inicializarElementosUI();
+
+        //Inicializa hashmap de posicoes de motoristas proximos
+        mHashMapMarkers = new HashMap<>();
 
 
         //Verifica se a localizaçao do usuario esta ativa
@@ -175,6 +191,19 @@ public class HomePassageiroActivity extends AppCompatActivity
             .title("O restaurante esta aqui")
             .icon(BitmapDescriptorFactory.fromResource(R.drawable.usuario))
             .position(latLng));
+
+        //Add circle
+        if(mCirclePassageiro != null){
+            mCirclePassageiro.remove();
+        }
+        mCirclePassageiro = mMap.addCircle(
+                new CircleOptions()
+                        .center(latLng)
+                        .fillColor(Color.argb(90, 103, 214, 226))
+                        .strokeColor(Color.argb(190, 184, 244, 250))
+                        .radius(3000) //metros
+        );
+
 
         centralizarMarcadores();
 
@@ -435,11 +464,10 @@ public class HomePassageiroActivity extends AppCompatActivity
             @Override
             public void onLocationChanged(Location location) {
 
-                UserProfile.atualizaGeoFireLocalizacaoUsuario(location.getLatitude(), location.getLongitude() );
+                UserProfile.atualizaGeoFireLocalizacaoUsuario(HomePassageiroActivity.this, location.getLatitude(), location.getLongitude() );
 
 
                 atualizarMapa(location);
-
 
             }
 
@@ -479,6 +507,7 @@ public class HomePassageiroActivity extends AppCompatActivity
                 }
             }
 
+            inicializarVariaveisMotoristasProximos(lastLocalizacaoConhecida);
             configurarAdapterSugestoesDestino(lastLocalizacaoConhecida);
             configurarAdapterSugestoesPartida(lastLocalizacaoConhecida);
 
@@ -486,6 +515,56 @@ public class HomePassageiroActivity extends AppCompatActivity
         } else {
             Toast.makeText(this, "Voce tem problemas com permissoes", Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+    private void inicializarVariaveisMotoristasProximos(Location location) {
+
+        DatabaseReference refLocalizacoes = ConfigFirebase.getDatabaseReference()
+                .child("localizacoes_usuarios").child("Driver");
+
+        mGeoFireMotoristasProximos = new GeoFire(refLocalizacoes);
+        mGeoLocationMotoristasProximos = new GeoLocation(location.getLatitude(), location.getLongitude());
+        mGeoQueryMotoristasProximos = mGeoFireMotoristasProximos.queryAtLocation(mGeoLocationMotoristasProximos, 3);
+        mGeoQueryMotoristasProximos.addGeoQueryEventListener(new GeoQueryEventListener() {
+            @Override
+            public void onKeyEntered(String key, GeoLocation location) {
+                LatLng latLng = new LatLng(location.latitude, location.longitude);
+                atualizaMarcadoresDriversProximos(key, latLng);
+                Log.d(TAG, "Motorista " + key + " entrou no raio de 3km");
+
+
+            }
+
+            @Override
+            public void onKeyExited(String key) {
+                //Remove o marcador do mapa
+                if(mHashMapMarkers.get(key) != null){
+                    mHashMapMarkers.get(key).remove();
+                }
+                Log.d(TAG, "Motorista " + key + " removido");
+            }
+
+            @Override
+            public void onKeyMoved(String key, GeoLocation location) {
+                LatLng latLng = new LatLng(location.latitude, location.longitude);
+                atualizaMarcadoresDriversProximos(key, latLng);
+                Log.d(TAG, "Motorista " + key + " se moveu na area de 3km");
+
+            }
+
+            @Override
+            public void onGeoQueryReady() {
+                Log.d(TAG, "query pronta");
+            }
+
+            @Override
+            public void onGeoQueryError(DatabaseError error) {
+                Log.d(TAG, "query com erro");
+            }
+        });
+
+
 
     }
 
@@ -642,7 +721,7 @@ public class HomePassageiroActivity extends AppCompatActivity
 
 
         DatabaseReference refLocalizacaoMotorista = ConfigFirebase.getDatabaseReference()
-                .child("localizacoes_usuarios");
+                .child("localizacoes_usuarios").child("Driver");
 
 
         final GeoFire geoFire = new GeoFire(refLocalizacaoMotorista);
@@ -695,6 +774,18 @@ public class HomePassageiroActivity extends AppCompatActivity
         centralizarMarcadores();
 
 
+    }
+
+
+    private void atualizaMarcadoresDriversProximos(String key, LatLng latLng){
+
+        if(mHashMapMarkers.get(key) != null){
+            mHashMapMarkers.get(key).remove();
+        }
+
+        mHashMapMarkers.put(key, mMap.addMarker(new MarkerOptions()
+            .icon(BitmapDescriptorFactory.fromResource(R.drawable.carro))
+            .position(latLng)));
     }
 
     private void layoutDesativarAvisoMotoristaACaminho(){

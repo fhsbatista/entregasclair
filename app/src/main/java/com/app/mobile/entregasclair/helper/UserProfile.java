@@ -1,6 +1,7 @@
 package com.app.mobile.entregasclair.helper;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.util.Log;
@@ -9,6 +10,7 @@ import com.app.mobile.entregasclair.activity.CorridaActivity;
 import com.app.mobile.entregasclair.activity.HomeMotoristaActivity;
 import com.app.mobile.entregasclair.activity.HomePassageiroActivity;
 import com.app.mobile.entregasclair.config.ConfigFirebase;
+import com.app.mobile.entregasclair.config.SharedPrefUsuario;
 import com.app.mobile.entregasclair.model.Motorista;
 import com.app.mobile.entregasclair.model.Passageiro;
 import com.app.mobile.entregasclair.model.Requisicao;
@@ -155,9 +157,11 @@ public class UserProfile {
 
     }
 
-    public static void atualizaGeoFireLocalizacaoUsuario(double latitude, double longitute){
+    public static void atualizaGeoFireLocalizacaoUsuario(Context context, double latitude, double longitute){
 
-        DatabaseReference refLocalUsuario = ConfigFirebase.getDatabaseReference().child("localizacoes_usuarios");
+        Usuario usuario = SharedPrefUsuario.recuperaUsuarioLogado(context);
+
+        DatabaseReference refLocalUsuario = ConfigFirebase.getDatabaseReference().child("localizacoes_usuarios").child(usuario.getTipo());
         GeoFire geoFire = new GeoFire(refLocalUsuario);
         geoFire.setLocation(
                 getIdUsuario(),
